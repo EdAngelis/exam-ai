@@ -1,0 +1,97 @@
+.title {
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px 0;
+  align-items: flex-start;
+}
+
+.form div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: start;
+}
+
+.form label {
+  max-width: 600px;
+  margin-bottom: 0.5rem;
+  font-weight: 900;
+  text-align: left;
+}
+
+.form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 500px;
+}
+
+.textarea {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 500px;
+}
+
+.form button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--sky-700);
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.form button:hover {
+  background-color: #005bb5;
+}
+
+.promptLabel {
+  width: 500px;
+  font-size: 1rem;
+  margin-top: 2rem;
+  text-align: justify;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.optionsContainer {
+  width: 95%;
+}
+
+.option {
+  border: 1px solid black;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.option:hover {
+  background-color: #007bff;
+}
+
+.selected {
+  background-color: var(--sky-700);
+  color: white;
+}

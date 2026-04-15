@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700&display=swap');
+
+:root {
+  --blue-50: #ebf8ff;
+  --blue-100: #bee3f8;
+  --blue-200: #90cdf4;
+  --blue-300: #63b3ed;
+  --blue-400: #4299e1;
+  --blue-500: #3182ce;
+  --blue-600: #2b6cb0;
+  --blue-700: #2c5282;
+  --blue-800: #2a4365;
+  --blue-900: #1a365d;
+  --sky-700: #167699;
+  --sky-500: #1f93ff;
+  --sky-300: #a2c8d6;
+
+  --muted: #d4d4d4;
+
+  --redwrong: #ff0000; /* Removed hyphen */
+  --greencorrect: #00ff00; /* Removed hyphen */
+  --score-pass: green;
+  --color-whatsapp: #25D366;
+  --score-fail: red;
+  --option-correct-bg: rgba(0, 255, 0, 0.1); /* Slight green background */
+  --option-incorrect-bg: rgba(255, 0, 0, 0.1); /* Slight red background */
+
+  /* FONTS */
+
+  --primary-font: 'Roboto', sans-serif;
+
+}
+
+* {
+
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  font-family: var(--primary-font);
+}
+
+main {
+  flex: 1; 
+}

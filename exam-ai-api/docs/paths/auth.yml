@@ -1,0 +1,111 @@
+signin:
+  post:
+    summary: Sign in a user
+    operationId: signIn
+    tags:
+      - Authentication
+    security:
+      - ApiKeyAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.schemas.yml#/SignIn'
+    responses:
+      '200':
+        description: User signed in successfully
+      '401':
+        description: Unauthorized
+validate-email:
+  get:
+    summary: Validate email with token
+    operationId: validateEmail
+    tags:
+      - Authentication
+    security:
+      - ApiKeyAuth: []
+    parameters:
+      - name: validationToken
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Email validated successfully
+      '404':
+        description: Invalid validation token
+      '500':
+        description: Server error
+resend-validation-token:
+  get:
+    summary: Resend validation token to email
+    operationId: resendValidationToken
+    tags:
+      - Authentication
+    security:
+      - ApiKeyAuth: []
+    parameters:
+      - name: email
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Validation token re-sent successfully
+      '404':
+        description: User not found
+      '500':
+        description: Server error
+send-password-token:
+  post:
+    summary: Send password change token to email
+    operationId: sendResetPasswordToken
+    tags:
+      - Authentication
+    security:
+      - ApiKeyAuth: []
+    parameters:
+      - name: email
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Password change token sent successfully
+      '404':
+        description: User not found
+      '500':
+        description: Server error
+reset-password:
+  post:
+    summary: Reset password with token
+    operationId: resetPassword
+    tags:
+      - Authentication
+    security:
+      - ApiKeyAuth: []
+    parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.schemas.yml#/ResetPassword'
+    responses:
+      '200':
+        description: Password changed successfully
+      '400':
+        description: Invalid or expired token
+      '404':
+        description: User not found
+      '500':
+        description: Server error

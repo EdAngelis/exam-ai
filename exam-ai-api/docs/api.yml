@@ -1,0 +1,46 @@
+openapi: 3.0.1
+info:
+  title: User Authentication API
+  version: 1.0.0
+tags:
+  - name: Users
+    description: Operations related to users
+  - name: Authentication
+    description: Operations related to authentication
+  - name: Files
+    description: Operations related to files
+paths:
+  /users:
+    $ref: './docs/paths/user.yml#/root'
+  /users/{id}:
+    $ref: './docs/paths/user.yml#/id'
+  /auth/signin:
+    $ref: './docs/paths/auth.yml#/signin'
+  /auth/validate-email/{validationToken}:
+    $ref: './docs/paths/auth.yml#/validate-email'
+  /auth/resend-validation-token/{email}:
+    $ref: './docs/paths/auth.yml#/resend-validation-token'
+  /auth/send-reset-password-token/{email}:
+    $ref: './docs/paths/auth.yml#/send-password-token'
+  /auth/reset-password/{token}:
+    $ref: './docs/paths/auth.yml#/reset-password'
+  /files:
+    $ref: './docs/paths/file.yml#/root'
+  /files/{id}:
+    $ref: './docs/paths/file.yml#/id'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      value: my-api-key
+  schemas:
+    user:
+      $ref: './docs/schemas/user.schemas.yml#/User'
+    signIn:
+      $ref: './docs/schemas/auth.schemas.yml#/SignIn'
+    file:
+      $ref: './docs/schemas/file.schemas.yml#/File'
+
+

@@ -1,0 +1,85 @@
+.main {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.container {
+
+  width: 30%;
+  max-width: 400px;
+
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.26);
+
+  padding: 10px;
+
+}
+
+.title {
+
+  text-align: center;
+}
+
+.instructions {
+  margin: 10px;
+  text-align: left;
+}
+
+.slot {
+  margin: 20px 0;
+}
+
+.info ul {
+  list-style-position: inside;
+  padding: 0 5px;
+}
+
+.code {
+  width: 12%;
+  padding: 20px 15px;
+  margin: 0 5px;
+  border: 1px solid var(--muted);
+  border-radius: 5px;
+  text-align: center;
+}
+
+.resend {
+  font-size: small;
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.resend a {
+  text-decoration: none;
+  color: var(--blue-400);
+}
+
+@media screen and (max-width: 1024px) {
+  .container {
+    width: 50%;
+    max-width: 500px;
+  }
+
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    width: 90%;
+    max-width: max-content;
+  }
+
+}

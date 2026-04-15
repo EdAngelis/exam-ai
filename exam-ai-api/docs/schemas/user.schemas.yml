@@ -1,0 +1,14 @@
+User:
+  type: object
+  properties:
+    name:
+      type: string
+      default: "John Doe"
+    email:
+      type: string
+      default: "example@example.com"
+    password:
+      type: string
+      default: "password123"
+  required:
+    - email

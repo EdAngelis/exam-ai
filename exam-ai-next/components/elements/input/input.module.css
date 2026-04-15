@@ -1,0 +1,37 @@
+.input {
+  height: 25px;
+  padding: 1.3rem 5px;
+  border-radius: 8px;
+  border: 1px solid var(--muted);
+  font-size: 1em;
+  transition: 0.4s;
+}
+
+.input:focus {
+  border-color: var(--blue-700);
+  outline: none;
+}
+
+.inputContainer {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 1.3rem 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.toggleButton {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+}

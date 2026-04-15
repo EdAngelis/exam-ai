@@ -1,0 +1,17 @@
+File:
+  type: object
+  properties:
+    url:
+      type: string
+      description: URL of the file
+    type:
+      type: string
+      description: Type of the file
+    size:
+      type: integer
+      description: Size of the file in bytes
+    name:
+      type: string
+      description: Name of the file
+  required:
+    - url

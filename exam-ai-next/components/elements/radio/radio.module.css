@@ -1,0 +1,14 @@
+.wrapper{
+    display: flex;
+    gap: 8px;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radioInput {
+    margin-right: 8px;
+}

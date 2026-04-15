@@ -1,0 +1,22 @@
+.authButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: white;
+  color: black;
+  border: 1px solid var(--muted);
+  margin-top: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.authButton svg {
+  padding: 0 5px;
+}
+
+.authButton:hover {
+  background-color: var(--muted);
+}

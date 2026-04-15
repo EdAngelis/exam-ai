@@ -1,0 +1,71 @@
+.footer {
+  position: relative;
+  background-color: rgb(1, 0, 34);
+  color: #fff;
+  padding: 0.5rem;
+  width: 100%;
+  bottom: 0;
+}
+
+.footerContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.footerContent p {
+  display: flex;
+  justify-content: center;
+}
+
+.footerContent span {
+  padding: 0 3px;
+}
+
+.footerContent a {
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 400;
+  transition: 0.3s;
+}
+
+.footerContent a:hover {
+  color: var(--sky-500);
+}
+
+.footerContent>p {
+  align-self: center;
+  font-weight: 300;
+}
+
+.contact {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: start;
+  gap: 8px;
+}
+
+.whatsappLink {
+  color: var(--color-whatsapp);
+  text-decoration: none;
+}
+
+@media screen and (max-width: 768px) {
+  .footerContent {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .contact {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+}

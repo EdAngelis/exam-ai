@@ -1,0 +1,142 @@
+root:
+  post:
+    summary: Create a new file
+    operationId: createFile
+    tags:
+      - Files
+    security:
+      - ApiKeyAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/file.schemas.yml#/File'
+    responses:
+      '201':
+        description: File created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: File created successfully
+                data:
+                  type: object
+                  properties:
+                    acknowledged:
+                      type: boolean
+                      example: true
+                    insertedId:
+                      type: string
+                      example: 67cdd4c39b22c6258646dcb6
+                status:
+                  type: integer
+                  example: 201
+      '400':
+        description: Invalid input
+  get:
+    summary: Get all files
+    operationId: getAllFiles
+    tags:
+      - Files
+    security:
+      - ApiKeyAuth: []
+    responses:
+      '200':
+        description: Files fetched successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Files fetched successfully
+                data:
+                  type: array
+                  items:
+                    $ref: '../schemas/file.schemas.yml#/File'
+                status:
+                  type: integer
+                  example: 200
+      '401':
+        description: Unauthorized
+id:
+  get:
+    summary: Get a file by ID
+    operationId: getFileById
+    tags:
+      - Files
+    security:
+      - ApiKeyAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: File found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Files fetched successfully
+                data:
+                  $ref: '../schemas/file.schemas.yml#/File'
+                status:
+                  type: integer
+                  example: 200
+      '404':
+        description: File not found
+  put:
+    summary: Update a file by ID
+    operationId: updateFile
+    tags:
+      - Files
+    security:
+      - ApiKeyAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/file.schemas.yml#/File'
+    responses:
+      '200':
+        description: File updated successfully
+      '400':
+        description: Invalid input
+      '404':
+        description: File not found
+  delete:
+    summary: Delete a file by ID
+    operationId: deleteFile
+    tags:
+      - Files
+    security:
+      - ApiKeyAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: File deleted successfully
+      '404':
+        description: File not found

@@ -1,0 +1,45 @@
+.container {
+  position: relative;
+  width: 600px;
+}
+
+.input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 580px;
+}
+
+.dropdown {
+  width: 600px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.option {
+  padding: 0.5rem;
+  width: 580px;
+
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.option:hover {
+  background: var(--sky-700);
+  color: white;
+}
+
+.selectedOption {
+  background: #28a745 !important;
+  color: white;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
