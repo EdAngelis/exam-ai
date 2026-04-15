@@ -3,7 +3,8 @@
     "allow": [
       "Bash(gh auth *)",
       "Bash(git *)",
-      "Bash(gh issue *)"
+      "Bash(gh issue *)",
+      "Bash(gh pr create --title 'Add CLAUDE.md with project context' --body ' *)"
     ]
   }
 }
