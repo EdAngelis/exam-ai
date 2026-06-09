@@ -31,7 +31,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <NextAuthProvider>{children}</NextAuthProvider>
+        <div className="content-wrapper">
+          <NextAuthProvider>{children}</NextAuthProvider>
+        </div>
         <Footer />
       </body>
     </html>
