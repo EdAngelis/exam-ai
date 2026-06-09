@@ -57,6 +57,9 @@ const loadCollections = async () => {
   Exam = await examModel(collectionNames.EXAMS);
 };
 
-loadCollections();
+loadCollections().catch((error) => {
+  console.error("Failed to initialize database collections:", error);
+  process.exit(1);
+});
 
 export { User, File, Question, Exam };
