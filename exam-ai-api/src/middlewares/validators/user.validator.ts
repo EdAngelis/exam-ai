@@ -21,6 +21,7 @@ const validateUser = (req: Request, res: Response, next: NextFunction) => {
       message: error.details[0].message,
       data: null,
     });
+    return;
   }
   next();
 };
@@ -33,6 +34,7 @@ const validateSignIn = (req: Request, res: Response, next: NextFunction) => {
       message: error.details[0].message,
       data: null,
     });
+    return;
   }
   next();
 };
