@@ -3,7 +3,9 @@
     "allow": [
       "Bash(gh auth *)",
       "Bash(git *)",
-      "Bash(gh issue *)"
+      "Bash(gh issue *)",
+      "Bash(npm run *)",
+      "Bash(gh pr create --title 'fix: footer always at bottom of viewport' --body ' *)"
     ]
   }
 }
