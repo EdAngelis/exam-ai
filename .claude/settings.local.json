@@ -5,7 +5,8 @@
       "Bash(git *)",
       "Bash(gh issue *)",
       "Bash(npm run *)",
-      "Bash(gh pr create --title 'fix: footer always at bottom of viewport' --body ' *)"
+      "Bash(gh pr create --title 'fix: footer always at bottom of viewport' --body ' *)",
+      "Bash(gh pr create --title 'fix: resolve HTTP headers, DB connection, and email error handling' --body ' *)"
     ]
   }
 }
