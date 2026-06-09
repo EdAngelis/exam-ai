@@ -75,6 +75,7 @@ export const generateQuestions = async (req, res) => {
   const type = req.body.type || "choice";
   const lang = req.body.lang || "Portuguese";
   const numberOfQuestions = req.body.numberOfQuestions || 5;
+  const difficulty = req.body.difficulty || "medium";
   try {
     const formItens = await questionsByAi(
       category,
@@ -83,7 +84,8 @@ export const generateQuestions = async (req, res) => {
       prompt,
       lang,
       numberOfQuestions,
-      questionSchema
+      questionSchema,
+      difficulty
     );
 
     formItens.map((q) => {
@@ -93,6 +95,7 @@ export const generateQuestions = async (req, res) => {
       q.category = category;
       q.subCategory = subCategory;
       if (subject) q.subject = subject;
+      q.difficulty = difficulty;
       q.answer = parseInt(q.answer);
     });
 

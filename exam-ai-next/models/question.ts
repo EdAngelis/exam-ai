@@ -14,6 +14,7 @@ interface Question {
     question: string;
     answer: number;
     whenWrong?: string;
+    difficulty?: "easy" | "medium" | "hard";
     options: Option[];
   }
 

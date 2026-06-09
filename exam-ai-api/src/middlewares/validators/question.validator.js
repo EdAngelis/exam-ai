@@ -11,6 +11,7 @@ export const questionSchema = Joi.object({
   question: Joi.string().required(),
   answer: Joi.number().required(),
   whenWrong: Joi.string().optional(),
+  difficulty: Joi.string().valid("easy", "medium", "hard").optional(),
   options: Joi.array()
     .items(
       Joi.object({

@@ -39,6 +39,7 @@ const GeneratorPage = () => {
     numberOfQuestions: "8",
     type: "",
     prompt: "",
+    difficulty: "medium" as "easy" | "medium" | "hard",
   });
 
   const [errors, setErrors] = useState({ category: "", subCategory: "" });
@@ -126,6 +127,7 @@ const GeneratorPage = () => {
       numberOfQuestions: Math.min(20, parseInt(formData.numberOfQuestions, 10)),
       type: formData.type,
       prompt: formData.prompt,
+      difficulty: formData.difficulty,
     };
 
     try {
@@ -200,6 +202,63 @@ const GeneratorPage = () => {
                 className={styles.input}
                 placeholder="Ex: 10"
               />
+            </div>
+
+            <div className={styles.difficultyGroup}>
+              <label>Nível de dificuldade</label>
+              <div className={styles.difficultyOptions}>
+                {(
+                  [
+                    {
+                      value: "easy",
+                      label: "Fácil",
+                      description:
+                        "Perguntas simples para crianças, linguagem clara e conceitos básicos.",
+                    },
+                    {
+                      value: "medium",
+                      label: "Médio",
+                      description:
+                        "Linguagem padrão para adultos; conhecimento geral sem especialização.",
+                    },
+                    {
+                      value: "hard",
+                      label: "Difícil",
+                      description:
+                        "Perguntas técnicas para especialistas, terminologia avançada e raciocínio aprofundado.",
+                    },
+                  ] as {
+                    value: "easy" | "medium" | "hard";
+                    label: string;
+                    description: string;
+                  }[]
+                ).map(({ value, label, description }) => (
+                  <label
+                    key={value}
+                    className={`${styles.difficultyOption} ${
+                      formData.difficulty === value
+                        ? styles.difficultySelected
+                        : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="difficulty"
+                      value={value}
+                      checked={formData.difficulty === value}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, difficulty: value }))
+                      }
+                    />
+                    <div>
+                      <span className={styles.difficultyLabel}>{label}</span>
+                      <span className={styles.difficultyDescription}>
+                        {description}
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </div>
             </div>
 
             <div>
