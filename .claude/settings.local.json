@@ -6,7 +6,12 @@
       "Bash(gh issue *)",
       "Bash(npm run *)",
       "Bash(gh pr create --title 'fix: footer always at bottom of viewport' --body ' *)",
-      "Bash(gh pr create --title 'fix: resolve HTTP headers, DB connection, and email error handling' --body ' *)"
+      "Bash(gh pr create --title 'fix: resolve HTTP headers, DB connection, and email error handling' --body ' *)",
+      "Bash(gh pr create --title 'feat: add difficulty levels \\(easy, medium, hard\\) for question generation' --body ' *)",
+      "Bash(Get-ChildItem -Path \"E:\\\\src\\\\exam-ai\\\\exam-ai-api\\\\src\" -Recurse -File)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Bash(npm install *)"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import nodemailerService from "../services/nodemailer-service";
+import resendService from "../services/resend-service";
 import config from "../config/config";
 
 const template = (clientUrl: string, token: string) => {
@@ -12,7 +12,7 @@ const sendChangePasswordToken = async (email: string, token: string) => {
 
   const subject = "Reset Password Request";
   const text = template(client, token);
-  await nodemailerService(email, subject, text);
+  await resendService(email, subject, text);
 };
 
 export default sendChangePasswordToken;

@@ -10,6 +10,7 @@ export type Properties = {
   client_url: string | undefined;
   serverless: string | undefined;
   open_ai_key: string | undefined;
+  resend_api_key: string | undefined;
   db: {
     uri: string | undefined;
     name: string | undefined;
@@ -29,6 +30,7 @@ const config: Config = {
     client_url: process.env.CLIENT_URL,
     serverless: process.env.SERVERLESS,
     open_ai_key: process.env.OPEN_AI_API_KEY,
+    resend_api_key: process.env.RESEND_API_KEY,
     db: {
       uri: process.env.DB_URI || "",
       name: process.env.DB_NAME || "user-auth",
@@ -41,6 +43,7 @@ const config: Config = {
     client_url: process.env.CLIENT_URL || "http://localhost:3000",
     serverless: process.env.SERVERLESS || "false",
     open_ai_key: process.env.OPEN_AI_API_KEY || "",
+    resend_api_key: process.env.RESEND_API_KEY,
     db: {
       uri: process.env.DB_URI || "mongodb://127.0.0.1:27017/",
       name: process.env.DB_NAME || "user-auth",
