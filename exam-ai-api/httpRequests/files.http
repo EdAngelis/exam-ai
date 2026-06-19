@@ -1,0 +1,26 @@
+### File requests
+# REST Client file for file endpoints.
+@baseUrl = http://localhost:3001
+@apiKey = my-api-key
+
+### Files - Get file by id
+GET {{baseUrl}}/files/{{fileId}}
+x-api-key: {{apiKey}}
+
+### Files - Update file by id
+PUT {{baseUrl}}/files/{{fileId}}
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "name": "updated-file-name",
+  "description": "Updated file metadata"
+}
+
+### Files - Delete file by id
+DELETE {{baseUrl}}/files/{{fileId}}
+x-api-key: {{apiKey}}
+
+### Files - List all files
+GET {{baseUrl}}/files
+x-api-key: {{apiKey}}

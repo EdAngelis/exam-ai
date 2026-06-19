@@ -1,0 +1,58 @@
+### Exam requests
+# REST Client file for exam endpoints.
+@baseUrl = http://localhost:3001
+@apiKey = my-api-key
+
+### Exams - Create exam
+POST {{baseUrl}}/exams
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "userEmail": "user@example.com",
+  "students": ["student1@example.com"],
+  "category": "Math",
+  "subCategory": "Algebra",
+  "questionsId": ["q1", "q2"],
+  "duration": 30
+}
+
+### Exams - Create students exams
+POST {{baseUrl}}/exams/students-exams
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "students": ["student1@example.com", "student2@example.com"],
+  "exam": {
+    "userEmail": "user@example.com",
+    "category": "Math",
+    "subCategory": "Algebra",
+    "questionsId": ["q1", "q2"]
+  }
+}
+
+### Exams - Get exam by id
+GET {{baseUrl}}/exams/{{examId}}
+x-api-key: {{apiKey}}
+
+### Exams - Get exams
+GET {{baseUrl}}/exams
+x-api-key: {{apiKey}}
+
+### Exams - Update exam results
+PUT {{baseUrl}}/exams/{{examId}}
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "result": [1, 0, 3]
+}
+
+### Exams - Delete exam by id
+DELETE {{baseUrl}}/exams/{{examId}}
+x-api-key: {{apiKey}}
+
+### Exams - Get exams by user email
+GET {{baseUrl}}/exams/user@example.com/by-user-email
+x-api-key: {{apiKey}}

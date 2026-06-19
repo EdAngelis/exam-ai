@@ -1,0 +1,42 @@
+ ### User requests
+# REST Client file for user endpoints.
+
+# @baseUrl = http://localhost:3001
+@userId = 12345
+
+### Users - Create a user
+POST {{baseUrl}}/users
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "name": "Test User",
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### Users - Get user by id
+GET {{baseUrl}}/users/{{userId}}
+x-api-key: {{apiKey}}
+
+### Users - Get user by email
+GET {{baseUrl}}/users/email/user@example.com
+x-api-key: {{apiKey}}
+
+### Users - Update user
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "name": "Updated Name",
+  "email": "updated@example.com"
+}
+
+### Users - Delete user
+DELETE {{baseUrl}}/users/{{userId}}
+x-api-key: {{apiKey}}
+
+### Users - List all users
+GET {{baseUrl}}/users
+x-api-key: {{apiKey}}

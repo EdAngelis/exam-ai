@@ -1,0 +1,43 @@
+### Question requests
+# REST Client file for question endpoints.
+@baseUrl = http://localhost:3001
+@apiKey = my-api-key
+
+### Questions - Generate questions
+POST {{baseUrl}}/questions/generate
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "userEmail": "user@example.com",
+  "category": "Math",
+  "subCategory": "Algebra",
+  "subject": "Linear equations",
+  "language": "en",
+  "count": 5,
+  "prompt": "Generate 5 multiple-choice algebra questions."
+}
+
+### Questions - Regenerate questions
+POST {{baseUrl}}/questions/regenerate-questions
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "prompt": "Regenerate these questions with easier wording.",
+  "questions": [
+    { "_id": "questionId1", "question": "..." }
+  ]
+}
+
+### Questions - Get categories by user email
+GET {{baseUrl}}/questions/categories/user@example.com
+x-api-key: {{apiKey}}
+
+### Questions - Get subcategories
+GET {{baseUrl}}/questions/subcategories
+x-api-key: {{apiKey}}
+
+### Questions - Get questions
+GET {{baseUrl}}/questions?userEmail=user@example.com&category=Math&subCategory=Algebra
+x-api-key: {{apiKey}}
