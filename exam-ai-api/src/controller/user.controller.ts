@@ -43,11 +43,10 @@ export const createUserController = async (req: Request, res: Response) => {
     user.created_at = new Date();
     user.updated_at = new Date();
 
-    await sendEmailToken(user.email, user.validationToken);
-
     const result = await createUser(user);
 
     if (result && result.insertedId) {
+      await sendEmailToken(user.email, user.validationToken);
       const createdUser = await fetchUser(result.insertedId.toString());
       response(res, {
         status: 201,
