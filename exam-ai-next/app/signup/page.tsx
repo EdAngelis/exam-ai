@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -17,7 +17,6 @@ import Loader from "@/components/elements/loader/loader";
 export default function Register() {
 
   const router = useRouter();
-  const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = React.useState<string>('');
   const [isLoading, setisLoading] = React.useState<boolean>(false);
 
@@ -48,7 +47,6 @@ export default function Register() {
 
   const onSubmit = async (data: any) => {
 
-    setSuccessMessage("");
     setError("");
     setisLoading(true);
 
@@ -59,15 +57,12 @@ export default function Register() {
         name: data.email.split("@")[0],
       });
 
-      if (!result) {
-        alert("Registration failed");
-        console.error("Registration failed");
+      if (result.error || !result.user) {
+        setError(result.error || "Registration failed. Please try again.");
       } else {
-        console.log("Registration successful", result);
         router.push("/verify-email");
       }
     } catch (error) {
-      alert("Registration failed");
       setError("Registration failed. Please try again.");
     }
 
@@ -80,8 +75,6 @@ export default function Register() {
       <div className={styles.page}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <h2 className={styles.title}>Crie uma conta</h2>
-
-          {successMessage && <p className={styles.success}>{successMessage}</p>}
 
           <div className={styles.slot}>
             <Label text="E-mail" />
