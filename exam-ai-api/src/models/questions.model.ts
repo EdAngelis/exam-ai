@@ -112,6 +112,7 @@ export default async (collection: Prop): Promise<Collection | undefined> => {
       `Error creating question collection ${collection.name}:`,
       error
     );
+    throw error;
   }
 };
 

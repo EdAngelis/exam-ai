@@ -76,5 +76,6 @@ export default async (collection: Prop): Promise<Collection | undefined> => {
     return db.collection(collection.name);
   } catch (error) {
     console.error(`Error creating user collection ${collection.name}:`, error);
+    throw error;
   }
 };

@@ -55,6 +55,7 @@ export const createUserController = async (req: Request, res: Response) => {
       });
       return;
     } else {
+      console.error("User not created: insertOne returned", result, "for user", user.email);
       response(res, {
         status: 500,
         message: "User not created",

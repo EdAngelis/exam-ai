@@ -59,5 +59,6 @@ export default async (collection: Prop) => {
     return db.collection(collection.name);
   } catch (error) {
     console.error(`Error creating file collection ${collection.name}:`, error);
+    throw error;
   }
 };
