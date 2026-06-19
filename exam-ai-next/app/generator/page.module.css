@@ -73,6 +73,58 @@
   margin-top: 0.25rem;
 }
 
+.difficultyGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 500px;
+}
+
+.difficultyOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.difficultyOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.difficultyOption input[type="radio"] {
+  margin-top: 3px;
+  accent-color: var(--sky-700);
+  flex-shrink: 0;
+}
+
+.difficultyOption div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.difficultySelected {
+  border-color: var(--sky-700);
+  background-color: var(--blue-50);
+}
+
+.difficultyLabel {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.difficultyDescription {
+  font-size: 0.8rem;
+  color: #555;
+  font-weight: 400;
+}
+
 .optionsContainer {
   width: 95%;
 }

@@ -12,6 +12,7 @@ export interface QuestionT {
   question: string;
   answer: number;
   whenWrong?: string;
+  difficulty?: string;
   options: { label: string; index: number }[];
   created_at?: Date;
   updated_at?: Date;
@@ -56,6 +57,10 @@ const VALIDATOR = {
       },
       whenWrong: {
         bsonType: "string",
+      },
+      difficulty: {
+        bsonType: "string",
+        enum: ["easy", "medium", "hard"],
       },
       options: {
         bsonType: "array",

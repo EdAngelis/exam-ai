@@ -1,5 +1,11 @@
 import openAIRequest from "../services/openAI";
 
+const DIFFICULTY_INSTRUCTIONS = {
+  easy: "Generate easy questions suitable for children: use simple language, short sentences, and focus on basic, well-known concepts.",
+  medium: "Generate medium difficulty questions for general adults: use clear standard language and cover non-specialist general knowledge.",
+  hard: "Generate hard, advanced questions for domain specialists: use technical terminology, require in-depth reasoning, and target expert-level knowledge.",
+};
+
 const questionsByAi = async (
   category,
   subCategory,
@@ -7,7 +13,8 @@ const questionsByAi = async (
   text,
   lang,
   numberOfQuestions,
-  choiceQuestionSchema
+  choiceQuestionSchema,
+  difficulty
 ) => {
   const schema = JSON.stringify(choiceQuestionSchema);
 
@@ -19,6 +26,9 @@ const questionsByAi = async (
     numberOfQuestions
   );
 
+  const difficultyInstruction =
+    DIFFICULTY_INSTRUCTIONS[difficulty] || DIFFICULTY_INSTRUCTIONS.medium;
+
   const openAIParams = {
     model: "gpt-4o-mini",
     temperature: 0,
@@ -26,7 +36,7 @@ const questionsByAi = async (
     messages: [
       {
         role: "system",
-        content: `You generate quiz questions based on a topic, text or url, and is important to returns just the data in JSON format, put each question in JSON structure like this ${schema} where the question will be on the field question, give four plausive options where just one is the correct, put the correct answer at the field answer as a number corresponding to its index in the options array, put an explanation on the field whenWrong, and responde in ${lang}`,
+        content: `You generate quiz questions based on a topic, text or url, and is important to returns just the data in JSON format, put each question in JSON structure like this ${schema} where the question will be on the field question, give four plausive options where just one is the correct, put the correct answer at the field answer as a number corresponding to its index in the options array, put an explanation on the field whenWrong, and responde in ${lang}. ${difficultyInstruction}`,
       },
       {
         role: "user",

@@ -10,6 +10,7 @@ export type GenerateQuestionsParams = {
   type?: string;
   lang?: string;
   numberOfQuestions: number;
+  difficulty?: "easy" | "medium" | "hard";
 };
 
 const getQuestions = async (
@@ -54,6 +55,7 @@ const generateQuestions = async ({
   type,
   lang,
   numberOfQuestions,
+  difficulty,
 }: GenerateQuestionsParams): Promise<string> => {
   const response = await fetch("/api/proxy?path=questions/generate", {
     method: "POST",
@@ -70,6 +72,7 @@ const generateQuestions = async ({
       type,
       lang,
       numberOfQuestions,
+      difficulty,
     }),
   });
   const data = await response.json();
