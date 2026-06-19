@@ -11,7 +11,9 @@
       "Bash(Get-ChildItem -Path \"E:\\\\src\\\\exam-ai\\\\exam-ai-api\\\\src\" -Recurse -File)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Sort-Object)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(gh pr *)"
     ]
   }
 }

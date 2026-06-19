@@ -46,7 +46,7 @@ const config: Config = {
     resend_api_key: process.env.RESEND_API_KEY,
     db: {
       uri: process.env.DB_URI || "mongodb://127.0.0.1:27017/",
-      name: process.env.DB_NAME || "user-auth",
+      name: process.env.DB_NAME || "exercise-AI",
     },
   },
 };
