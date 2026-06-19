@@ -2,3 +2,4 @@
 node_modules
 .serverless
 dist
+http-client.env.json

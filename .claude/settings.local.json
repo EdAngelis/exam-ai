@@ -13,7 +13,12 @@
       "Bash(Sort-Object)",
       "Bash(npm install *)",
       "Bash(npx tsc *)",
-      "Bash(gh pr *)"
+      "Bash(gh pr *)",
+      "Bash(code --version)",
+      "Bash(code --list-extensions --show-versions)",
+      "Bash(xxd http-client.env.json)",
+      "Bash(xxd exam-ai-api/http-client.env.json)",
+      "Bash(xxd rest-client.env.json)"
     ]
   }
 }
