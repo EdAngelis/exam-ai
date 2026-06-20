@@ -41,8 +41,36 @@ EOF
 )"
 ```
 
+Capture the issue URL printed by `gh issue create` — it's needed in the next step.
+
 ---
 
-## Step 3 — Report back
+## Step 3 — Add the issue to the "exam-ai" project board, in the Backlog column
 
-After the issue is created, output the issue URL so the user can open it directly.
+This requires the `project` scope on the `gh` token. If a command below fails with a missing-scope error, ask the user to run `gh auth refresh -s project` themselves (it's an interactive browser auth step) and retry.
+
+```bash
+# Resolve the "exam-ai" project number and id, owned by EdAngelis
+PROJECT_JSON=$(gh project list --owner EdAngelis --format json)
+PROJECT_NUMBER=$(echo "$PROJECT_JSON" | jq -r '.projects[] | select(.title=="exam-ai") | .number')
+PROJECT_ID=$(echo "$PROJECT_JSON" | jq -r '.projects[] | select(.title=="exam-ai") | .id')
+
+# Add the issue to the project, capture the new item's id
+ITEM_ID=$(gh project item-add "$PROJECT_NUMBER" --owner EdAngelis --url "<issue-url-from-step-2>" --format json | jq -r '.id')
+
+# Resolve the Status field id and the "Backlog" option id
+FIELD_JSON=$(gh project field-list "$PROJECT_NUMBER" --owner EdAngelis --format json)
+FIELD_ID=$(echo "$FIELD_JSON" | jq -r '.fields[] | select(.name=="Status") | .id')
+OPTION_ID=$(echo "$FIELD_JSON" | jq -r '.fields[] | select(.name=="Status") | .options[] | select(.name=="Backlog") | .id')
+
+# Move the item into the Backlog column
+gh project item-edit --id "$ITEM_ID" --project-id "$PROJECT_ID" --field-id "$FIELD_ID" --single-select-option-id "$OPTION_ID"
+```
+
+If the project has no field literally named `Status`, or no option literally named `Backlog`, list the available field/option names instead of guessing and ask the user which one to use.
+
+---
+
+## Step 4 — Report back
+
+After the issue is created and added to the project, output the issue URL and confirm it was placed in the Backlog column so the user can open it directly.
