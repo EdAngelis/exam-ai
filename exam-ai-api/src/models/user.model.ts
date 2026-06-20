@@ -1,6 +1,6 @@
 import initializeDb from "../db/db";
 import { Collection } from "mongodb";
-import { collectionExists, type Prop } from "./index";
+import { collectionExists, collectionNames, type Prop } from "./index";
 
 export interface UserT {
   name?: string;
@@ -54,7 +54,9 @@ const VALIDATOR = {
   },
 };
 
-export default async (collection: Prop): Promise<Collection | undefined> => {
+const ensureUserCollection = async (
+  collection: Prop
+): Promise<Collection<UserT> | undefined> => {
   const db = await initializeDb();
   const exist = await collectionExists(collection.name);
   try {
@@ -73,9 +75,14 @@ export default async (collection: Prop): Promise<Collection | undefined> => {
       console.log("Validation changed");
     }
 
-    return db.collection(collection.name);
+    return db.collection<UserT>(collection.name);
   } catch (error) {
     console.error(`Error creating user collection ${collection.name}:`, error);
     throw error;
   }
 };
+
+export const getCollection = (): Promise<Collection<UserT> | undefined> =>
+  ensureUserCollection(collectionNames.USERS);
+
+export default ensureUserCollection;

@@ -142,7 +142,7 @@ export const deleteUserController = async (req: Request, res: Response) => {
     const id = req.params.id;
     const result = await deleteUser(id);
 
-    if (result && result.deletedCount === 0) {
+    if (!result) {
       response(res, {
         status: 404,
         message: "User not found",

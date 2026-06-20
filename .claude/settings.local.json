@@ -18,7 +18,9 @@
       "Bash(code --list-extensions --show-versions)",
       "Bash(xxd http-client.env.json)",
       "Bash(xxd exam-ai-api/http-client.env.json)",
-      "Bash(xxd rest-client.env.json)"
+      "Bash(xxd rest-client.env.json)",
+      "Bash(powershell -Command \"\\(Get-Content -Raw src/repository/user.repository.ts\\) -replace 'ensureCollection\\\\\\(User\\\\\\)', 'ensureCollection<UserT>\\(User\\)' | Set-Content -NoNewline src/repository/user.repository.ts\")",
+      "Bash(node -e \"console.log\\(require\\('typescript'\\).version\\)\")"
     ]
   }
 }

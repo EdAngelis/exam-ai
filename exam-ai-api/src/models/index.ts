@@ -1,4 +1,5 @@
 import initializeDb from "../db/db";
+import { Collection, Document } from "mongodb";
 import userModel from "./user.model";
 import fileModel from "./file.model";
 import questionModel from "./questions.model";
@@ -49,6 +50,17 @@ export const collectionExists = async (
 
   return names.includes(collectionName);
 };
+
+export function ensureCollection<T extends Document = Document>(
+  collection: unknown
+): asserts collection is Collection<T> {
+  if (
+    !collection ||
+    typeof (collection as Collection<T>).insertOne !== "function"
+  ) {
+    throw new Error("Collection is not a valid MongoDB collection instance.");
+  }
+}
 
 const loadCollections = async () => {
   User = await userModel(collectionNames.USERS);

@@ -44,7 +44,7 @@ const signInController = async (req: Request, res: Response) => {
     }
 
     user.password = undefined;
-    const token = generateToken({ email: user.email });
+    const token = generateToken({ email });
     response(res, {
       message: "Sign-in successful",
       data: user,
@@ -132,7 +132,7 @@ const resendValidationToken = async (req: Request, res: Response) => {
       return;
     }
 
-    await sendEmailToken(user.email, validationToken);
+    await sendEmailToken(email, validationToken);
 
     response(res, {
       message: "Validation token re-sent successfully",
@@ -163,7 +163,7 @@ const sendResetPasswordToken = async (req: Request, res: Response) => {
       return;
     }
 
-    const token = generateToken({ email: user.email });
+    const token = generateToken({ email });
 
     const userUpdated = await updateUser(user._id, {
       resetPasswordToken: token,
@@ -178,7 +178,7 @@ const sendResetPasswordToken = async (req: Request, res: Response) => {
       return;
     }
 
-    await sendChangePasswordToken(user.email, token);
+    await sendChangePasswordToken(email, token);
 
     response(res, {
       message: "Password change token sent successfully",
