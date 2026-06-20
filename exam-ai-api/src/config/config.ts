@@ -32,8 +32,8 @@ const config: Config = {
     open_ai_key: process.env.OPEN_AI_API_KEY,
     resend_api_key: process.env.RESEND_API_KEY,
     db: {
-      uri: process.env.DB_URI || "",
-      name: process.env.DB_NAME || "user-auth",
+      uri: process.env.DB_URI,
+      name: process.env.DB_NAME,
     },
   },
   development: {

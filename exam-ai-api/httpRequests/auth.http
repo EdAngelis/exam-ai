@@ -1,0 +1,33 @@
+### Auth requests
+# REST Client file for auth endpoints.
+
+### Auth - Sign in
+POST {{baseUrl}}/auth/signin
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### Auth - Validate email token
+GET {{baseUrl}}/auth/validate-email/validationToken123
+x-api-key: {{apiKey}}
+
+### Auth - Resend validation token
+GET {{baseUrl}}/auth/resend-validation-token/user@example.com
+x-api-key: {{apiKey}}
+
+### Auth - Send reset password token
+GET {{baseUrl}}/auth/send-reset-password-token/user@example.com
+x-api-key: {{apiKey}}
+
+### Auth - Reset password
+POST {{baseUrl}}/auth/reset-password/resetToken123
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "password": "newPassword123"
+}

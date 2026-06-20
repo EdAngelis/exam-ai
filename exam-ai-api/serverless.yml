@@ -13,8 +13,8 @@ provider:
     NODE_ENV: ${env:NODE_ENV}
     NODE_OPTIONS: ${env:NODE_OPTIONS}
     CLIENT_URL: ${env:CLIENT_URL}
-    EMAIL_USER: ${env:EMAIL_USER}
-    EMAIL_PASS: ${env:EMAIL_PASS}
+    #EMAIL_USER: ${env:EMAIL_USER}
+    #EMAIL_PASS: ${env:EMAIL_PASS}
     API_KEY: ${env:API_KEY}
     PORT: ${env:PORT}
     SERVERLESS: ${env:SERVERLESS}

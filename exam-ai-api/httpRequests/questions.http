@@ -1,7 +1,5 @@
 ### Question requests
 # REST Client file for question endpoints.
-@baseUrl = http://localhost:3001
-@apiKey = my-api-key
 
 ### Questions - Generate questions
 POST {{baseUrl}}/questions/generate

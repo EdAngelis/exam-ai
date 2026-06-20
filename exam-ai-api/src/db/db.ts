@@ -3,6 +3,9 @@ import config from "../config/config";
 
 let dbInstance: Db | null = null;
 
+const redactUri = (uri: string): string =>
+  uri.replace(/\/\/([^:/?#]+):([^@/?#]+)@/, "//***:***@");
+
 const initializeDb = async (): Promise<Db> => {
   if (dbInstance) {
     return dbInstance;
@@ -13,14 +16,19 @@ const initializeDb = async (): Promise<Db> => {
     throw new Error("DB_URI is not configured. Set the DB_URI environment variable.");
   }
 
+  const safeUri = redactUri(uri);
+
   try {
     const client = new MongoClient(uri);
     await client.connect();
-    console.log("Connected to database");
+    console.log(`Connected to database "${config.db.name}" at ${safeUri}`);
     dbInstance = client.db(config.db.name);
     return dbInstance;
   } catch (error) {
-    console.error("Failed to connect to the database:", error);
+    console.error(
+      `Failed to connect to database "${config.db.name}" at ${safeUri}:`
+    );
+    console.dir(error, { depth: null });
     throw error;
   }
 };
