@@ -53,11 +53,18 @@
   margin-top: 20px;
 }
 
+@media (max-width: 600px) {
+  .examGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .examCard {
-  max-height: 110px;
+  min-height: 110px;
   border-radius: 20px;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   background-color: #fff;
   padding: 16px;
@@ -78,17 +85,24 @@
 .cardContent {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 20px;
   flex-grow: 1;
+  min-width: 0;
 }
 
 .cardRow {
   display: flex;
   flex-direction: row;
-
   align-items: center;
   gap: 20px;
+  min-width: 0;
+}
+
+.cardText {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .cardButton {
