@@ -26,6 +26,7 @@ provider:
     REGION: ${env:REGION}
     BUCKET_NAME: ${env:BUCKET_NAME}
     RESEND_API_KEY: ${env:RESEND_API_KEY}
+    RESEND_FROM_EMAIL: ${env:RESEND_FROM_EMAIL}
     SECRET: ${env:SECRET}
 
 functions:

@@ -11,6 +11,7 @@ export type Properties = {
   serverless: string | undefined;
   open_ai_key: string | undefined;
   resend_api_key: string | undefined;
+  resend_from_email: string | undefined;
   db: {
     uri: string | undefined;
     name: string | undefined;
@@ -31,6 +32,7 @@ const config: Config = {
     serverless: process.env.SERVERLESS,
     open_ai_key: process.env.OPEN_AI_API_KEY,
     resend_api_key: process.env.RESEND_API_KEY,
+    resend_from_email: process.env.RESEND_FROM_EMAIL,
     db: {
       uri: process.env.DB_URI,
       name: process.env.DB_NAME,
@@ -44,6 +46,8 @@ const config: Config = {
     serverless: process.env.SERVERLESS || "false",
     open_ai_key: process.env.OPEN_AI_API_KEY || "",
     resend_api_key: process.env.RESEND_API_KEY,
+    resend_from_email:
+      process.env.RESEND_FROM_EMAIL || "Exam AI <onboarding@resend.dev>",
     db: {
       uri: process.env.DB_URI || "mongodb://127.0.0.1:27017/",
       name: process.env.DB_NAME || "exercise-AI",

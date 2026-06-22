@@ -7,11 +7,11 @@ async function resendService(
   to: string,
   subject: string,
   text: string,
-  html?: string
+  html?: string,
 ) {
   try {
     const { error } = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || "Exam AI <onboarding@resend.dev>",
+      from: config.resend_from_email!,
       to: [to],
       subject,
       ...(html ? { html } : { text }),
