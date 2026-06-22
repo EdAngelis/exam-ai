@@ -115,6 +115,39 @@
 
 .cardText h2 {
   text-align: left;
+  font-size: 1.5rem;
+}
+
+.cardText h3 {
+  font-size: 1.1rem;
+}
+
+.cardText p {
+  font-size: 0.9rem;
+}
+
+.cardButton button {
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .cardText h2 {
+    font-size: 1.1rem;
+  }
+
+  .cardText h3 {
+    font-size: 0.9rem;
+  }
+
+  .cardText p {
+    font-size: 0.75rem;
+  }
+
+  .cardButton button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
 }
 
 .scores {
