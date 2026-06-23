@@ -1,6 +1,20 @@
-Your job is to create a well-structured GitHub issue on the `EdAngelis/exam-ai` repository based on the user's description.
+Your job is to create a well-structured GitHub issue on the repository configured in `.claude/repository.md`, based on the user's description.
 
 The user's description is: **$ARGUMENTS**
+
+---
+
+## Step 0 — Load repository configuration
+
+Read `.claude/repository.md` and extract the values from its frontmatter into shell variables, used by every step below:
+
+```bash
+REPO=$(grep '^repo:' .claude/repository.md | head -1 | sed 's/^repo: *//')
+PROJECT_OWNER=$(grep '^project_owner:' .claude/repository.md | head -1 | sed 's/^project_owner: *//')
+PROJECT_NUMBER=$(grep '^project_number:' .claude/repository.md | head -1 | sed 's/^project_number: *//')
+```
+
+This lets the same command work unmodified in another repository — just edit `.claude/repository.md` there.
 
 ---
 
@@ -26,7 +40,7 @@ Run:
 
 ```bash
 gh issue create \
-  --repo EdAngelis/exam-ai \
+  --repo "$REPO" \
   --title "<derived title>" \
   --body "<derived body>" \
   --label "<bug|enhancement|question>"
@@ -35,7 +49,7 @@ gh issue create \
 Use a HEREDOC for the body to preserve newlines:
 
 ```bash
-gh issue create --repo EdAngelis/exam-ai --title "<title>" --label "<type>" --body "$(cat <<'EOF'
+gh issue create --repo "$REPO" --title "<title>" --label "<type>" --body "$(cat <<'EOF'
 <body markdown here>
 EOF
 )"
@@ -45,23 +59,20 @@ Capture the issue URL printed by `gh issue create` — it's needed in the next s
 
 ---
 
-## Step 3 — Add the issue to the "exam-ai" project board, in the Backlog column
+## Step 3 — Add the issue to the project board, in the Backlog column
 
-This requires the `project` scope on the `gh` token. If a command below fails with a missing-scope error, ask the user to run `gh auth refresh -s project` themselves (it's an interactive browser auth step) and retry.
+This requires the `project` scope on the `gh` token. If a command below fails with a missing-scope error, ask the user to run `gh auth refresh -s project,read:project` themselves (it's an interactive browser auth step) and retry.
 
 ```bash
-# Resolve the "exam-ai" project number and id, owned by EdAngelis
-PROJECT_JSON=$(gh project list --owner EdAngelis --format json)
-PROJECT_NUMBER=$(echo "$PROJECT_JSON" | jq -r '.projects[] | select(.title=="exam-ai") | .number')
-PROJECT_ID=$(echo "$PROJECT_JSON" | jq -r '.projects[] | select(.title=="exam-ai") | .id')
+# Resolve the project id, owned by $PROJECT_OWNER
+PROJECT_ID=$(gh project view "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --format json --jq '.id')
 
 # Add the issue to the project, capture the new item's id
-ITEM_ID=$(gh project item-add "$PROJECT_NUMBER" --owner EdAngelis --url "<issue-url-from-step-2>" --format json | jq -r '.id')
+ITEM_ID=$(gh project item-add "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --url "<issue-url-from-step-2>" --format json --jq '.id')
 
 # Resolve the Status field id and the "Backlog" option id
-FIELD_JSON=$(gh project field-list "$PROJECT_NUMBER" --owner EdAngelis --format json)
-FIELD_ID=$(echo "$FIELD_JSON" | jq -r '.fields[] | select(.name=="Status") | .id')
-OPTION_ID=$(echo "$FIELD_JSON" | jq -r '.fields[] | select(.name=="Status") | .options[] | select(.name=="Backlog") | .id')
+FIELD_ID=$(gh project field-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --format json --jq '.fields[] | select(.name=="Status") | .id')
+OPTION_ID=$(gh project field-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --format json --jq '.fields[] | select(.name=="Status") | .options[] | select(.name=="Backlog") | .id')
 
 # Move the item into the Backlog column
 gh project item-edit --id "$ITEM_ID" --project-id "$PROJECT_ID" --field-id "$FIELD_ID" --single-select-option-id "$OPTION_ID"
