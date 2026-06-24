@@ -16,3 +16,19 @@ ResetPassword:
       type: string
   required:
     - newPassword
+
+RefreshToken:
+  type: object
+  properties:
+    refreshToken:
+      type: string
+  required:
+    - refreshToken
+
+GoogleSignIn:
+  type: object
+  properties:
+    idToken:
+      type: string
+  required:
+    - idToken

@@ -102,3 +102,50 @@ id:
           description: User deleted successfully
         '404':
           description: User not found
+students:
+    get:
+      summary: Add a student to a teacher's student list
+      operationId: addStudent
+      tags:
+        - Users
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: userEmail
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: studentEmail
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student added successfully
+        '404':
+          description: User not found
+    delete:
+      summary: Remove a student from a teacher's student list
+      operationId: removeStudent
+      tags:
+        - Users
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: userEmail
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: studentEmail
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student removed successfully
+        '404':
+          description: User not found
