@@ -1,5 +1,5 @@
 import express from "express";
-import checkApiKey from "../middlewares/api-key";
+import checkAppKey from "../middlewares/app-key";
 import authenticateToken from "../middlewares/token";
 import { validateUser } from "../middlewares/validators/user.validator";
 import {
@@ -15,21 +15,21 @@ import {
 
 const router = express.Router();
 
-router.post("/", checkApiKey, validateUser, createUserController);
-router.get("/:id", checkApiKey, fetchUserController);
-router.get("/email/:email", checkApiKey, fetchUserByEmailController);
+router.post("/", checkAppKey, validateUser, createUserController);
+router.get("/:id", checkAppKey, fetchUserController);
+router.get("/email/:email", checkAppKey, fetchUserByEmailController);
 router.get(
   "/students/:userEmail/:studentEmail",
-  checkApiKey,
+  checkAppKey,
   addStudentController
 );
 router.delete(
   "/students/:userEmail/:studentEmail",
-  checkApiKey,
+  checkAppKey,
   removeStudentController
 );
-router.put("/:id", checkApiKey, updateUserController);
-router.delete("/:id", checkApiKey, deleteUserController);
-router.get("/", checkApiKey, getAllUsersController);
+router.put("/:id", checkAppKey, updateUserController);
+router.delete("/:id", checkAppKey, deleteUserController);
+router.get("/", checkAppKey, getAllUsersController);
 
 export default router;

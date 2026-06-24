@@ -1,5 +1,5 @@
 import express from "express";
-import checkApiKey from "../middlewares/api-key";
+import checkAppKey from "../middlewares/app-key";
 import {
   fetchCategories,
   fetchSubCategories,
@@ -10,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.post("/generate", checkApiKey, generateQuestions);
-router.post("/regenerate-questions", checkApiKey, regenerateQuestions);
-router.get("/categories/:userEmail", checkApiKey, fetchCategories);
-router.get("/subcategories", checkApiKey, fetchSubCategories);
-router.get("/", checkApiKey, fetchQuestions);
+router.post("/generate", checkAppKey, generateQuestions);
+router.post("/regenerate-questions", checkAppKey, regenerateQuestions);
+router.get("/categories/:userEmail", checkAppKey, fetchCategories);
+router.get("/subcategories", checkAppKey, fetchSubCategories);
+router.get("/", checkAppKey, fetchQuestions);
 
 export default router;
