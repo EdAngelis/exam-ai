@@ -12,7 +12,7 @@ const ExamHistory = ({ userEmail }: { userEmail: string }) => {
   const [currentExams, setCurrentExams] = useState<Exam[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(2);
+  const [itemsPerPage] = useState(10);
   let totalPages = useRef(0);
   const router = useRouter();
 
@@ -49,7 +49,9 @@ const ExamHistory = ({ userEmail }: { userEmail: string }) => {
         (exam) =>
           exam.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
           exam.subCategory.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (exam.subject?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+          (exam.subject?.toLowerCase() || "").includes(
+            searchTerm.toLowerCase(),
+          ),
       );
 
       const indexOfLastExam = currentPage * itemsPerPage;

@@ -53,6 +53,8 @@ const addResult = async (id, result) => {
       returnDocument: "after",
     }
   );
+  // Driver v6 returns the document directly (or null when no match).
+  if (!updatedExam) return null;
   const questionsId = updatedExam.questionsId.map((id) => new ObjectId(id));
   const questions = await Question.find({
     _id: { $in: questionsId },

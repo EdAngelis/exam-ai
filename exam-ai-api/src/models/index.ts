@@ -69,7 +69,7 @@ const loadCollections = async () => {
   Exam = await examModel(collectionNames.EXAMS);
 };
 
-loadCollections().catch((error) => {
+export const ready = loadCollections().catch((error) => {
   console.error("Failed to initialize database collections:", error);
   process.exit(1);
 });

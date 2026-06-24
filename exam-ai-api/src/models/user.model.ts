@@ -9,6 +9,7 @@ export interface UserT {
   active?: boolean;
   validationToken?: string;
   resetPasswordToken?: string;
+  refreshToken?: string;
   level?: number;
   students?: string[];
   created_at?: Date;
@@ -36,6 +37,9 @@ const VALIDATOR = {
         bsonType: "string",
       },
       resetPasswordToken: {
+        bsonType: "string",
+      },
+      refreshToken: {
         bsonType: "string",
       },
       level: {
