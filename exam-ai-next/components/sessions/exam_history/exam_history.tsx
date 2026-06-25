@@ -19,8 +19,11 @@ const ExamHistory = ({ userEmail }: { userEmail: string }) => {
   useEffect(() => {
     const fetchExams = async () => {
       const examsList = await getExams(userEmail);
-      totalPages.current = Math.ceil(examsList.length / itemsPerPage);
-      setExams(examsList);
+      const sorted = [...examsList].sort((a, b) =>
+        (b._id ?? "") > (a._id ?? "") ? 1 : -1,
+      );
+      totalPages.current = Math.ceil(sorted.length / itemsPerPage);
+      setExams(sorted);
     };
 
     if (userEmail) fetchExams();
