@@ -1,0 +1,104 @@
+signup:
+  post:
+    summary: Create a new user from the mobile app
+    operationId: signUpMobile
+    tags:
+      - Authentication
+    security:
+      - MobileApiKeyAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/user.schemas.yml#/User'
+    responses:
+      '201':
+        description: User created successfully
+      '400':
+        description: Invalid input
+signin:
+  post:
+    summary: Sign in a user from the mobile app
+    operationId: signInMobile
+    tags:
+      - Authentication
+    security:
+      - MobileApiKeyAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.schemas.yml#/SignIn'
+    responses:
+      '200':
+        description: Returns an access token, refresh token, and the signed-in user
+      '401':
+        description: Invalid credentials
+      '403':
+        description: User email not verified
+      '404':
+        description: User not found
+refresh:
+  post:
+    summary: Exchange a valid refresh token for a new access token
+    operationId: refreshMobileToken
+    tags:
+      - Authentication
+    security:
+      - MobileApiKeyAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.schemas.yml#/RefreshToken'
+    responses:
+      '200':
+        description: Returns a new access token and refresh token
+      '400':
+        description: Refresh token is required
+      '403':
+        description: Invalid or expired refresh token
+google:
+  post:
+    summary: Sign in or sign up a user via a Google ID token
+    operationId: googleSignInMobile
+    tags:
+      - Authentication
+    security:
+      - MobileApiKeyAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.schemas.yml#/GoogleSignIn'
+    responses:
+      '200':
+        description: Returns an access token, refresh token, and the user
+      '400':
+        description: Google ID token is required
+      '401':
+        description: Invalid Google ID token
+me:
+  get:
+    summary: Get the currently authenticated mobile user
+    operationId: getCurrentMobileUser
+    tags:
+      - Authentication
+    security:
+      - MobileApiKeyAuth: []
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Current user
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/user.schemas.yml#/User'
+      '401':
+        description: Unauthorized
+      '404':
+        description: User not found

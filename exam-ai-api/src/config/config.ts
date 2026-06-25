@@ -6,6 +6,8 @@ const env: "production" | "development" =
 export type Properties = {
   port: string | undefined;
   api_key: string | undefined;
+  mobile_api_key: string | undefined;
+  google_client_id: string | undefined;
   secret: string | undefined;
   client_url: string | undefined;
   serverless: string | undefined;
@@ -26,6 +28,8 @@ type Config = {
 const config: Config = {
   production: {
     api_key: process.env.API_KEY,
+    mobile_api_key: process.env.MOBILE_API_KEY,
+    google_client_id: process.env.GOOGLE_CLIENT_ID,
     port: process.env.PORT,
     secret: process.env.SECRET,
     client_url: process.env.CLIENT_URL,
@@ -40,6 +44,8 @@ const config: Config = {
   },
   development: {
     api_key: process.env.API_KEY || "my-api-key",
+    mobile_api_key: process.env.MOBILE_API_KEY || "my-mobile-api-key",
+    google_client_id: process.env.GOOGLE_CLIENT_ID,
     port: process.env.PORT || "3001",
     secret: process.env.SECRET || "default-secret-key",
     client_url: process.env.CLIENT_URL || "http://localhost:3000",

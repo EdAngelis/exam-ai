@@ -5,6 +5,8 @@ import {
   deleteUser,
   getAllUsers,
   fetchUserByEmail,
+  insertStudent,
+  removeStudent,
 } from "../repository/user.repository";
 import { ObjectId } from "mongodb";
 import { response } from "./response";
@@ -209,6 +211,71 @@ export const fetchUserByEmailController = async (
       status: 200,
       message: "User fetched successfully",
       data: user,
+    });
+    return;
+  } catch (error) {
+    console.dir(error, { depth: null });
+    response(res, {
+      status: 500,
+      message: "Internal Server Error",
+      data: null,
+    });
+    return;
+  }
+};
+
+export const addStudentController = async (req: Request, res: Response) => {
+  try {
+    const { userEmail, studentEmail } = req.params;
+    const updatedUser = await insertStudent(userEmail, studentEmail);
+
+    if (!updatedUser) {
+      response(res, {
+        status: 404,
+        message: "User not found",
+        data: null,
+      });
+      return;
+    }
+
+    response(res, {
+      status: 200,
+      message: "Student added successfully",
+      data: updatedUser,
+    });
+    return;
+  } catch (error) {
+    console.dir(error, { depth: null });
+    response(res, {
+      status: 500,
+      message: "Internal Server Error",
+      data: null,
+    });
+    return;
+  }
+};
+
+export const removeStudentController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { userEmail, studentEmail } = req.params;
+    const updatedUser = await removeStudent(userEmail, studentEmail);
+
+    if (!updatedUser) {
+      response(res, {
+        status: 404,
+        message: "User not found",
+        data: null,
+      });
+      return;
+    }
+
+    response(res, {
+      status: 200,
+      message: "Student removed successfully",
+      data: updatedUser,
     });
     return;
   } catch (error) {

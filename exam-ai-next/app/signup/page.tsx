@@ -60,7 +60,7 @@ export default function Register() {
       if (result.error || !result.user) {
         setError(result.error || "Registration failed. Please try again.");
       } else {
-        router.push("/verify-email");
+        router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
       }
     } catch (error) {
       setError("Registration failed. Please try again.");
