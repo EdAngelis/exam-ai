@@ -100,7 +100,7 @@ export const updateResults = async (req, res) => {
     const update = req.body;
 
     const exam = await addResult(id, update);
-    if (exam.matchedCount === 0) {
+    if (!exam) {
       return res.status(404).json({
         message: "Exam not found",
       });

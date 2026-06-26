@@ -42,6 +42,20 @@ const verifyEmail = async (code: string): Promise<Response> => {
   return data;
 };
 
+const resendValidationToken = async (email: string): Promise<Response> => {
+  const response = await fetch(
+    `/api/proxy?path=auth/resend-validation-token/${email}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.json();
+  return data;
+};
+
 const sendResetPasswordToken = async (email: string): Promise<Response> => {
   const response = await fetch(
     `/api/proxy?path=auth/send-reset-password-token/${email}`,
@@ -72,4 +86,10 @@ const resetPassword = async (
   return data;
 };
 
-export { signInService, verifyEmail, sendResetPasswordToken, resetPassword };
+export {
+  signInService,
+  verifyEmail,
+  resendValidationToken,
+  sendResetPasswordToken,
+  resetPassword,
+};
