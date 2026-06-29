@@ -24,15 +24,12 @@ const signInMobileController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const user = await signIn(email);
-    if (!user) {
-      response(res, { message: "User not found", data: null, status: 404 });
-      return;
-    }
-
-    const passwordMatch = await comparePasswords(password, user.password);
-    if (!passwordMatch) {
+    // Return the same generic 401 whether the email is unknown or the password
+    // is wrong: avoids leaking which emails have accounts (user enumeration) and
+    // gives the app one consistent "bad login" case to handle instead of a 404.
+    if (!user || !(await comparePasswords(password, user.password))) {
       response(res, {
-        message: "Invalid credentials",
+        message: "Invalid email or password",
         data: null,
         status: 401,
       });
