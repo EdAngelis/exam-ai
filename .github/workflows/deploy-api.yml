@@ -1,0 +1,105 @@
+name: Deploy API (production)
+
+# Deploys exam-ai-api to the `exam-ai-api` CloudFormation stack whenever main
+# changes AND the change touches the API folder (or this workflow). Frontend /
+# mobile / root-doc-only commits do not trigger an API deploy.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "exam-ai-api/**"
+      - ".github/workflows/deploy-api.yml"
+  workflow_dispatch: {}
+
+# Authenticate to AWS with GitHub OIDC (no static AWS keys stored in GitHub).
+permissions:
+  id-token: write
+  contents: read
+
+# Serialize production deploys; never cancel one mid-flight.
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: exam-ai-api
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: exam-ai-api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (tsc)
+        run: npm run build
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: SAM build
+        run: sam build
+
+      - name: SAM deploy
+        env:
+          DB_URI: ${{ secrets.DB_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          API_KEY: ${{ secrets.API_KEY }}
+          MOBILE_API_KEY: ${{ secrets.MOBILE_API_KEY }}
+          APP_SECRET: ${{ secrets.SECRET }}
+          OPEN_AI_API_KEY: ${{ secrets.OPEN_AI_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          APP_AWS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
+          APP_AWS_SECRET: ${{ secrets.AWS_SECRET }}
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          CLIENT_URL: ${{ secrets.CLIENT_URL }}
+        run: |
+          sam deploy \
+            --stack-name exam-ai-api \
+            --region us-east-1 \
+            --resolve-s3 \
+            --s3-prefix exam-ai-api \
+            --capabilities CAPABILITY_IAM \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides \
+              "DbUri=$DB_URI" \
+              "DbName=$DB_NAME" \
+              "ApiKey=$API_KEY" \
+              "MobileApiKey=$MOBILE_API_KEY" \
+              "Secret=$APP_SECRET" \
+              "OpenAiApiKey=$OPEN_AI_API_KEY" \
+              "ResendApiKey=$RESEND_API_KEY" \
+              "ResendFromEmail=$RESEND_FROM_EMAIL" \
+              "AwsKeyId=$APP_AWS_KEY_ID" \
+              "AwsSecret=$APP_AWS_SECRET" \
+              "BucketName=$BUCKET_NAME" \
+              "AppRegion=us-east-1" \
+              "GoogleClientId=$GOOGLE_CLIENT_ID" \
+              "ClientUrl=$CLIENT_URL"
+
+      - name: Print API URL
+        run: |
+          aws cloudformation describe-stacks \
+            --stack-name exam-ai-api \
+            --region us-east-1 \
+            --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" \
+            --output text

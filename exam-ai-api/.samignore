@@ -1,0 +1,19 @@
+# Files excluded from the Lambda package. `sam build` copies everything in
+# CodeUri except these, then installs production dependencies from package.json.
+# We ship the compiled dist/ (built by `tsc` before `sam build`) — never src/.
+src
+.serverless
+.aws-sam
+node_modules
+docs
+httpRequests
+.vscode
+.git
+.github
+.env
+.example.env
+samconfig.toml
+http-client.env.json
+tsconfig.json
+serverless.yml
+*.md

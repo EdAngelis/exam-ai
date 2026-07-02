@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  exam-ai-api — Express REST API on AWS Lambda behind an HTTP API Gateway.
+  Deployed with AWS SAM. The same src/server.ts entry point runs locally
+  (app.listen when SERVERLESS === "false") and in Lambda (export const
+  handler = serverless(app)).
+
+# ---------------------------------------------------------------------------
+# Parameters. Secrets (NoEcho) and per-environment config are injected at
+# deploy time — from GitHub Actions secrets in CI, or from samconfig.toml for
+# local `sam deploy`. Nothing sensitive is hardcoded in this template.
+# ---------------------------------------------------------------------------
+Parameters:
+  DbUri:
+    Type: String
+    NoEcho: true
+    Description: MongoDB connection string.
+  DbName:
+    Type: String
+    Default: prod
+    Description: MongoDB database name.
+  ApiKey:
+    Type: String
+    NoEcho: true
+    Description: x-api-key shared secret for the web client.
+  MobileApiKey:
+    Type: String
+    NoEcho: true
+    Description: x-api-key shared secret for the mobile client.
+  Secret:
+    Type: String
+    NoEcho: true
+    Description: JWT / app signing secret.
+  OpenAiApiKey:
+    Type: String
+    NoEcho: true
+    Description: OpenAI API key used for question generation.
+  ResendApiKey:
+    Type: String
+    NoEcho: true
+    Description: Resend API key for transactional email.
+  ResendFromEmail:
+    Type: String
+    Default: "Exam AI <onboarding@resend.dev>"
+    Description: From address used when sending mail via Resend.
+  AwsKeyId:
+    Type: String
+    NoEcho: true
+    Description: Access key id used by the app's aws-sdk / multer-s3 uploads.
+  AwsSecret:
+    Type: String
+    NoEcho: true
+    Description: Secret access key used by the app's aws-sdk / multer-s3 uploads.
+  BucketName:
+    Type: String
+    Description: S3 bucket for image uploads.
+  AppRegion:
+    Type: String
+    Default: us-east-1
+    Description: Region the app passes to the aws-sdk (app-level REGION env var).
+  GoogleClientId:
+    Type: String
+    Description: Google OAuth client id used to verify Google sign-in tokens.
+  ClientUrl:
+    Type: String
+    Description: Allowed frontend origin (CLIENT_URL).
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 30
+    MemorySize: 1024
+
+Resources:
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/server.handler
+      Description: exam-ai-api Express app (serverless-http)
+      Environment:
+        Variables:
+          # Static / runtime config
+          NODE_ENV: production
+          SERVERLESS: "true"
+          NODE_OPTIONS: "--enable-source-maps"
+          # Injected from parameters (secrets + per-env config)
+          DB_URI: !Ref DbUri
+          DB_NAME: !Ref DbName
+          API_KEY: !Ref ApiKey
+          MOBILE_API_KEY: !Ref MobileApiKey
+          SECRET: !Ref Secret
+          OPEN_AI_API_KEY: !Ref OpenAiApiKey
+          RESEND_API_KEY: !Ref ResendApiKey
+          RESEND_FROM_EMAIL: !Ref ResendFromEmail
+          AWS_KEY_ID: !Ref AwsKeyId
+          AWS_SECRET: !Ref AwsSecret
+          BUCKET_NAME: !Ref BucketName
+          REGION: !Ref AppRegion
+          GOOGLE_CLIENT_ID: !Ref GoogleClientId
+          CLIENT_URL: !Ref ClientUrl
+      Events:
+        Root:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: ANY
+        Proxy:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description: Base URL of the HTTP API Gateway endpoint.
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
