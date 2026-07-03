@@ -1,5 +1,6 @@
 import express from "express";
 import checkAppKey from "../middlewares/app-key";
+import authenticateToken from "../middlewares/token";
 import {
   fetchCategories,
   fetchSubCategories,
@@ -10,10 +11,30 @@ import {
 
 const router = express.Router();
 
-router.post("/generate", checkAppKey, generateQuestions);
-router.post("/regenerate-questions", checkAppKey, regenerateQuestions);
-router.get("/categories/:userEmail", checkAppKey, fetchCategories);
-router.get("/subcategories", checkAppKey, fetchSubCategories);
-router.get("/", checkAppKey, fetchQuestions);
+router.post(
+  "/generate",
+  checkAppKey,
+  authenticateToken,
+  generateQuestions
+);
+router.post(
+  "/regenerate-questions",
+  checkAppKey,
+  authenticateToken,
+  regenerateQuestions
+);
+router.get(
+  "/categories/:userEmail",
+  checkAppKey,
+  authenticateToken,
+  fetchCategories
+);
+router.get(
+  "/subcategories",
+  checkAppKey,
+  authenticateToken,
+  fetchSubCategories
+);
+router.get("/", checkAppKey, authenticateToken, fetchQuestions);
 
 export default router;

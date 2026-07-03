@@ -31,6 +31,23 @@ const signInService = async (credentials: {
   return data;
 };
 
+const googleSignInService = async (
+  idToken: string
+): Promise<SignInResponseParams> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/proxy?path=auth/google`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idToken }),
+    }
+  );
+  const data = await response.json();
+  return data;
+};
+
 const verifyEmail = async (code: string): Promise<Response> => {
   const response = await fetch(`/api/proxy?path=auth/validate-email/${code}`, {
     method: "GET",
@@ -88,6 +105,7 @@ const resetPassword = async (
 
 export {
   signInService,
+  googleSignInService,
   verifyEmail,
   resendValidationToken,
   sendResetPasswordToken,
