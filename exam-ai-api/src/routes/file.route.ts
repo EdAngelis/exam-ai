@@ -1,5 +1,6 @@
 import express from "express";
 import checkAppKey from "../middlewares/app-key";
+import authenticateToken from "../middlewares/token";
 import { validateFile } from "../middlewares/validators/file.validator";
 import {
   createFileController,
@@ -13,9 +14,15 @@ import {
 const router = express.Router();
 
 //router.post("/", upload.single("image"), createFileController);
-router.get("/:id", checkAppKey, fetchFileController);
-router.put("/:id", checkAppKey, validateFile, updateFileController);
-router.delete("/:id", checkAppKey, deleteFileController);
-router.get("/", checkAppKey, getAllFilesController);
+router.get("/:id", checkAppKey, authenticateToken, fetchFileController);
+router.put(
+  "/:id",
+  checkAppKey,
+  authenticateToken,
+  validateFile,
+  updateFileController
+);
+router.delete("/:id", checkAppKey, authenticateToken, deleteFileController);
+router.get("/", checkAppKey, authenticateToken, getAllFilesController);
 
 export default router;
