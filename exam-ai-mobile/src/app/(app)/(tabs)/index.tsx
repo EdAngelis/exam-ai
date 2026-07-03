@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/atoms/button';
-import { ExamHistory } from '@/components/organisms/exam-history';
 import { QuestionsFilter } from '@/components/organisms/questions-filter';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -40,11 +39,6 @@ export default function DashboardScreen() {
               <QuestionsFilter userEmail={email} />
             </View>
           )}
-
-          <View style={styles.section}>
-            <ThemedText type="smallBold">Exam history</ThemedText>
-            <ExamHistory userEmail={email} />
-          </View>
         </View>
       </ScrollView>
     </ThemedView>
