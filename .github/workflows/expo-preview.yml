@@ -1,0 +1,49 @@
+name: Expo Preview
+
+# Publishes an EAS Update preview whenever a PR to main is opened, updated, or
+# reopened AND touches the mobile app. Posts a QR code / preview link back as
+# a PR comment (via expo/expo-github-action/preview).
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - "exam-ai-mobile/**"
+      - ".github/workflows/expo-preview.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: expo-preview-${{ github.event.number }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: exam-ai-mobile
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: exam-ai-mobile/package-lock.json
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - uses: expo/expo-github-action/preview@v8
+        with:
+          working-directory: exam-ai-mobile
+          command: eas update --auto --branch pr-${{ github.event.number }}
