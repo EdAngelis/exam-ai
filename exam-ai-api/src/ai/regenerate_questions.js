@@ -10,8 +10,8 @@ const regenerateQuestions = async (questions, text) => {
     messages: [
       {
         role: "system",
-        content: `You will take questions in a array of objects, change the questions as the user requested. 
-        is important to keep the same format and return the json objects inside a array even if there is just one question.`,
+        content: `You will take questions in a array of objects, change the questions as the user requested.
+        is important to keep the same format and return the json objects inside a array even if there is just one question. Do not include the correct answer, its definition, or obvious hints within the question text; avoid phrasing where the answer can be trivially inferred from the wording, definitions embedded in the question, or grammatical cues. Make all four options plausible and comparable in length and style so the correct one does not stand out.`,
       },
       {
         role: "user",
