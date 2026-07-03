@@ -70,7 +70,7 @@ jobs:
           APP_AWS_SECRET: ${{ secrets.AWS_SECRET }}
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          CLIENT_URL: ${{ secrets.CLIENT_URL }}
+          CLIENT_URL: ${{ vars.CLIENT_URL }}
         run: |
           sam deploy \
             --stack-name exam-ai-api-staging \
