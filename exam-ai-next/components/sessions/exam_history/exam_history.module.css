@@ -64,7 +64,7 @@
   border-radius: 20px;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
   background-color: #fff;
   padding: 16px;
@@ -85,8 +85,9 @@
 .cardContent {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
+  align-items: center;
   gap: 20px;
   flex-grow: 1;
   min-width: 0;
@@ -97,6 +98,7 @@
   flex-direction: row;
   align-items: center;
   gap: 20px;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -111,19 +113,29 @@
   align-items: center;
   gap: 10px;
   flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .cardText h2 {
   text-align: left;
   font-size: 1.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cardText h3 {
   font-size: 1.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cardText p {
   font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cardButton button {
@@ -132,6 +144,19 @@
 }
 
 @media (max-width: 600px) {
+  .examCard,
+  .cardContent {
+    flex-wrap: wrap;
+  }
+
+  .cardText h2,
+  .cardText h3,
+  .cardText p {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
   .cardText h2 {
     font-size: 1.1rem;
   }
