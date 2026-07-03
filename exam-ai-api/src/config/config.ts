@@ -8,6 +8,7 @@ export type Properties = {
   api_key: string | undefined;
   mobile_api_key: string | undefined;
   google_client_id: string | undefined;
+  google_client_id_web: string | undefined;
   secret: string | undefined;
   client_url: string | undefined;
   serverless: string | undefined;
@@ -30,6 +31,10 @@ const config: Config = {
     api_key: process.env.API_KEY,
     mobile_api_key: process.env.MOBILE_API_KEY,
     google_client_id: process.env.GOOGLE_CLIENT_ID,
+    // Falls back to the mobile client id when unset, so this stays backward
+    // compatible in environments where only one Google OAuth client is configured.
+    google_client_id_web:
+      process.env.GOOGLE_CLIENT_ID_WEB || process.env.GOOGLE_CLIENT_ID,
     port: process.env.PORT,
     secret: process.env.SECRET,
     client_url: process.env.CLIENT_URL,
@@ -46,6 +51,8 @@ const config: Config = {
     api_key: process.env.API_KEY || "my-api-key",
     mobile_api_key: process.env.MOBILE_API_KEY || "my-mobile-api-key",
     google_client_id: process.env.GOOGLE_CLIENT_ID,
+    google_client_id_web:
+      process.env.GOOGLE_CLIENT_ID_WEB || process.env.GOOGLE_CLIENT_ID,
     port: process.env.PORT || "3001",
     secret: process.env.SECRET || "default-secret-key",
     client_url: process.env.CLIENT_URL || "http://localhost:3000",

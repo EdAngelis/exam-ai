@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
 
 const proxy = async (req: Request) => {
   const { searchParams } = new URL(req.url);
@@ -20,6 +21,12 @@ const proxy = async (req: Request) => {
       'Content-Type': 'application/json',
       'x-api-key': process.env.API_KEY || ''
     });
+
+    const session = await auth();
+    const backendToken = (session?.user as { backendToken?: string } | undefined)?.backendToken;
+    if (backendToken) {
+      headers.set('Authorization', `Bearer ${backendToken}`);
+    }
 
     const url = `${process.env.API_URL}/${path}?${query}`;
 

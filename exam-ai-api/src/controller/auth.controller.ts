@@ -1,16 +1,22 @@
 import { type Request, type Response } from "express";
+import { OAuth2Client } from "google-auth-library";
 import { response } from "./response";
 import {
   signIn,
   findByValidationToken,
   updateUser,
+  fetchUser,
   fetchUserByEmail,
+  createUser,
 } from "../repository/user.repository";
 import { comparePasswords, hashPassword } from "../tools/crypto";
 import { generateToken, verifyToken } from "../tools/jwt";
 import { generateValidationEmailToken } from "../tools/email-token";
 import { sendEmailToken, sendChangePasswordToken } from "../emails/index";
 import { type UserT } from "../models/user.model";
+import config from "../config/config";
+
+const googleClient = new OAuth2Client();
 
 const signInController = async (req: Request, res: Response) => {
   try {
@@ -55,6 +61,78 @@ const signInController = async (req: Request, res: Response) => {
   } catch (error) {
     response(res, {
       message: `Error during sign-in: ${error}`,
+      data: null,
+      status: 500,
+    });
+    return;
+  }
+};
+
+// Mints a backend JWT for a web (NextAuth) Google sign-in. The web app's
+// signIn callback already upserts the user via POST /users before this runs,
+// so this mostly fetches the existing user; it also creates one defensively
+// in case that upsert hasn't landed yet.
+const googleWebController = async (req: Request, res: Response) => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      response(res, {
+        message: "Google ID token is required",
+        data: null,
+        status: 400,
+      });
+      return;
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: config.google_client_id_web,
+    });
+    const payload = ticket.getPayload();
+    if (!payload?.email) {
+      response(res, {
+        message: "Invalid Google ID token",
+        data: null,
+        status: 401,
+      });
+      return;
+    }
+
+    let user = await fetchUserByEmail(payload.email);
+    if (!user) {
+      const newUser: UserT = {
+        email: payload.email,
+        name: payload.name,
+        active: true,
+        level: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      const result = await createUser(newUser);
+      user = await fetchUser(result.insertedId.toString());
+    }
+
+    if (!user) {
+      response(res, {
+        message: "Error creating user",
+        data: null,
+        status: 500,
+      });
+      return;
+    }
+
+    const token = generateToken({ email: payload.email });
+    user.password = undefined;
+    response(res, {
+      message: "Google sign-in successful",
+      data: user,
+      token,
+      status: 200,
+    });
+    return;
+  } catch (error) {
+    response(res, {
+      message: `Error during Google sign-in: ${error}`,
       data: null,
       status: 500,
     });
@@ -256,6 +334,7 @@ const resetPassword = async (req: Request, res: Response) => {
 
 export {
   signInController,
+  googleWebController,
   validateEmail,
   resendValidationToken,
   sendResetPasswordToken,
