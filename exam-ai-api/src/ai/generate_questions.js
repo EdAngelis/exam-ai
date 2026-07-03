@@ -6,6 +6,9 @@ const DIFFICULTY_INSTRUCTIONS = {
   hard: "Generate hard, advanced questions for domain specialists: use technical terminology, require in-depth reasoning, and target expert-level knowledge.",
 };
 
+const ANTI_GIVEAWAY_INSTRUCTION =
+  "Do not include the correct answer, its definition, or obvious hints within the question text; avoid phrasing where the answer can be trivially inferred from the wording, definitions embedded in the question, or grammatical cues. Make all four options plausible and comparable in length and style so the correct one does not stand out.";
+
 const questionsByAi = async (
   category,
   subCategory,
@@ -36,7 +39,7 @@ const questionsByAi = async (
     messages: [
       {
         role: "system",
-        content: `You generate quiz questions based on a topic, text or url, and is important to returns just the data in JSON format, put each question in JSON structure like this ${schema} where the question will be on the field question, give four plausive options where just one is the correct, put the correct answer at the field answer as a number corresponding to its index in the options array, put an explanation on the field whenWrong, and responde in ${lang}. ${difficultyInstruction}`,
+        content: `You generate quiz questions based on a topic, text or url, and is important to returns just the data in JSON format, put each question in JSON structure like this ${schema} where the question will be on the field question, give four plausive options where just one is the correct, put the correct answer at the field answer as a number corresponding to its index in the options array, put an explanation on the field whenWrong, and responde in ${lang}. ${difficultyInstruction} ${ANTI_GIVEAWAY_INSTRUCTION}`,
       },
       {
         role: "user",
