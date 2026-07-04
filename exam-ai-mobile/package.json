@@ -48,7 +48,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "dev-client": "npx expo start --dev-client",
+    "production": "npx eas-cli@latest workflow:run create-production-builds.yml"
   },
   "private": true
 }
