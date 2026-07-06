@@ -13,6 +13,7 @@ export default function AppLayout() {
       <Stack.Screen name="generator" options={{ title: 'Generate questions' }} />
       <Stack.Screen name="exam" options={{ title: 'Exam' }} />
       <Stack.Screen name="student" options={{ title: 'Students' }} />
+      <Stack.Screen name="assign-exam" options={{ title: 'Assign exam' }} />
       <Stack.Screen name="settings" options={{ title: 'Account' }} />
     </Stack>
   );
