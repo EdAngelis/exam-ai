@@ -46,4 +46,7 @@ jobs:
       - uses: expo/expo-github-action/preview@v8
         with:
           working-directory: exam-ai-mobile
-          command: eas update --auto --branch pr-${{ github.event.number }}
+          # --environment preview pulls EXPO_PUBLIC_* vars from the EAS
+          # "preview" environment (expo.dev → project → Environment variables);
+          # CI has no .env, so without it the bundle ships with an empty API URL.
+          command: eas update --auto --branch pr-${{ github.event.number }} --environment preview

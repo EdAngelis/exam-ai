@@ -7,6 +7,12 @@
     "icon": "./assets/images/icon.png",
     "scheme": "examaimobile",
     "userInterfaceStyle": "automatic",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3622d679-0df0-48ed-b83a-c04abb2e89ab"
+    },
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.rivertech.examai",
