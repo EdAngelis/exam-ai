@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Question, User, Exam } from "../../../models";
+import { Question, Exam } from "../../../models";
 import {
   getQuestions,
   getSubcategory,
   getCategory,
 } from "../../../service/questions.service";
-import {
-  insertExam,
-  insertStudentsExams,
-} from "../../../service/exams.service";
-import { getUser } from "../../../service/user.service";
-import { Button, MultiSelection } from "../../../components";
+import { insertExam } from "../../../service/exams.service";
+import { saveAssignExamDraft } from "../../../utils/assign_exam_draft";
+import { Button } from "../../../components";
 
 import Dropdown from "../../elements/dropdown/dropdown";
 import style from "./questions-filter.module.css";
@@ -19,7 +16,6 @@ import style from "./questions-filter.module.css";
 export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [user, setUser] = useState<User | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [questionsFiltered, setQuestionsFiltered] = useState<Question[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -28,12 +24,10 @@ export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
   const [subCategory, setSubCategory] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
   const [subjects, setSubjects] = useState<string[]>([]);
-  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
   useEffect(() => {
     if (!userEmail) return;
     startTransition(fetchCategories);
-    fetchUser();
   }, [userEmail]);
 
   const fetchCategories = async () => {
@@ -44,15 +38,6 @@ export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
       setCategories(resp);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const fetchUser = async () => {
-    try {
-      const repo = await getUser(userEmail);
-      setUser(repo);
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -148,31 +133,13 @@ export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
     );
   };
 
-  const generateStudentsExam = async (students: string[]) => {
-    console.log("generateStudentsExam", students);
+  const goToAssignExam = () => {
     if (questionsFiltered.length === 0) {
       alert("Você precisa selecionar ao menos uma questão para gerar o exame");
       return;
     }
-
-    // if (!selectedStudents || selectedStudents.length === 0) {
-    //   alert("Você precisa adicionar estudantes para gerar o exame");
-    //   return;
-    // }
-    const exam = toBuildExam();
-    try {
-      const resp = await insertStudentsExams(students, exam);
-      resetFilter();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const resetFilter = () => {
-    setSubCategories([]);
-    setSubjects([]);
-    setQuestions([]);
-    setQuestionsFiltered([]);
+    saveAssignExamDraft(toBuildExam());
+    router.push("/assign-exam");
   };
 
   return (
@@ -236,17 +203,6 @@ export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
                 </div>
               </form>
             )}
-            {/*  <div className={style.multiSelect}>
-              <MultiSelection
-                options={
-                  (user?.students &&
-                    user?.students.map((e) => ({ label: e, value: e }))) ||
-                  []
-                }
-                selectedValues={selectedStudents}
-                onChange={setSelectedStudents}
-              />
-            </div> */}
           </div>
 
           <div className={style.questions}>
@@ -254,12 +210,7 @@ export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
             <Button type="button" onClick={() => goToExam()}>
               Iniciar exame
             </Button>
-            <Button
-              type="button"
-              onClick={() =>
-                user?.students && generateStudentsExam(user?.students)
-              }
-            >
+            <Button type="button" onClick={() => goToAssignExam()}>
               Gerar Exame<br></br> para Estudantes
             </Button>
           </div>

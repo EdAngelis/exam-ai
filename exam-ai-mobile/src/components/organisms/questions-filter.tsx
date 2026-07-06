@@ -10,13 +10,14 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import type { Exam, Question, User } from '@/models';
-import { insertExam, insertStudentsExams } from '@/service/exams.service';
+import { insertExam } from '@/service/exams.service';
 import {
   getCategory,
   getQuestions,
   getSubcategory,
 } from '@/service/questions.service';
 import { getUser } from '@/service/user.service';
+import { saveAssignExamDraft } from '@/utils';
 
 const SELECT_CATEGORY = 'Select Category';
 const SELECT_SUBCATEGORY = 'Select SubCategory';
@@ -141,7 +142,7 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
     }
   };
 
-  const assignToStudents = async () => {
+  const goToAssignExam = () => {
     setMessage(null);
     if (filtered.length === 0) {
       setMessage('Select at least one question first.');
@@ -152,12 +153,8 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
       setMessage('You have no students to assign this exam to.');
       return;
     }
-    try {
-      const resp = await insertStudentsExams(students, buildExam());
-      setMessage(`Assigned to ${resp.insertedCount ?? students.length} student(s).`);
-    } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Could not assign exam.');
-    }
+    saveAssignExamDraft(buildExam());
+    router.push('/assign-exam');
   };
 
   const goToGenerator = () => {
@@ -222,7 +219,7 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
         title="Assign exam to students"
         size="full"
         variant="secondary"
-        onPress={assignToStudents}
+        onPress={goToAssignExam}
       />
     </ThemedView>
   );
