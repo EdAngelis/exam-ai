@@ -7,6 +7,7 @@ import {
   fetchUserByEmail,
   createUser,
   updateUser,
+  ensureGameInviteCode,
 } from "../repository/user.repository";
 import { comparePasswords } from "../tools/crypto";
 import {
@@ -49,10 +50,20 @@ const signInMobileController = async (req: Request, res: Response) => {
     const refreshToken = generateRefreshToken({ email });
     await updateUser(user._id, { refreshToken } as UserT);
 
-    user.password = undefined;
+    const userWithInviteCode = await ensureGameInviteCode(user._id);
+    if (!userWithInviteCode) {
+      response(res, {
+        message: "User not found",
+        data: null,
+        status: 404,
+      });
+      return;
+    }
+
+    userWithInviteCode.password = undefined;
     response(res, {
       message: "Sign-in successful",
-      data: { user, accessToken, refreshToken },
+      data: { user: userWithInviteCode, accessToken, refreshToken },
       status: 200,
     });
     return;
@@ -133,9 +144,11 @@ const meMobileController = async (req: Request, res: Response) => {
       return;
     }
 
+    const userWithInviteCode = await ensureGameInviteCode(user._id);
+
     response(res, {
       message: "User fetched successfully",
-      data: user,
+      data: userWithInviteCode,
       status: 200,
     });
     return;
@@ -198,13 +211,23 @@ const googleMobileController = async (req: Request, res: Response) => {
       return;
     }
 
+    const userWithInviteCode = await ensureGameInviteCode(user._id);
+    if (!userWithInviteCode) {
+      response(res, {
+        message: "User not found",
+        data: null,
+        status: 404,
+      });
+      return;
+    }
+
     const accessToken = generateToken({ email: payload.email });
     const refreshToken = generateRefreshToken({ email: payload.email });
-    await updateUser(user._id, { refreshToken } as UserT);
+    await updateUser(userWithInviteCode._id, { refreshToken } as UserT);
 
     response(res, {
       message: "Google sign-in successful",
-      data: { user, accessToken, refreshToken },
+      data: { user: userWithInviteCode, accessToken, refreshToken },
       status: 200,
     });
     return;

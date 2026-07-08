@@ -4,11 +4,13 @@ import userModel from "./user.model";
 import fileModel from "./file.model";
 import questionModel from "./questions.model";
 import examModel from "./exam.model";
+import gameModel from "./game.model";
 
 let User;
 let File;
 let Question;
 let Exam;
+let Game;
 
 export type Prop = {
   name: string;
@@ -20,6 +22,7 @@ export type AllCollections = {
   FILES: Prop;
   QUESTIONS: Prop;
   EXAMS: Prop;
+  GAMES: Prop;
 };
 
 export const collectionNames: AllCollections = {
@@ -37,6 +40,10 @@ export const collectionNames: AllCollections = {
   },
   EXAMS: {
     name: "exams",
+    revalidate: false,
+  },
+  GAMES: {
+    name: "games",
     revalidate: false,
   },
 };
@@ -67,6 +74,7 @@ const loadCollections = async () => {
   File = await fileModel(collectionNames.FILES);
   Question = await questionModel(collectionNames.QUESTIONS);
   Exam = await examModel(collectionNames.EXAMS);
+  Game = await gameModel(collectionNames.GAMES);
 };
 
 export const ready = loadCollections().catch((error) => {
@@ -74,4 +82,4 @@ export const ready = loadCollections().catch((error) => {
   process.exit(1);
 });
 
-export { User, File, Question, Exam };
+export { User, File, Question, Exam, Game };

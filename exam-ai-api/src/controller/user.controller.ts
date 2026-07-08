@@ -5,6 +5,7 @@ import {
   deleteUser,
   getAllUsers,
   fetchUserByEmail,
+  ensureGameInviteCode,
   insertStudent,
   removeStudent,
 } from "../repository/user.repository";
@@ -91,10 +92,12 @@ export const fetchUserController = async (req: Request, res: Response) => {
       return;
     }
 
+    const userWithInviteCode = await ensureGameInviteCode(user._id);
+
     response(res, {
       status: 200,
       message: "User fetched successfully",
-      data: user,
+      data: userWithInviteCode,
     });
     return;
   } catch (error) {
@@ -207,10 +210,12 @@ export const fetchUserByEmailController = async (
       return;
     }
 
+    const userWithInviteCode = await ensureGameInviteCode(user._id);
+
     response(res, {
       status: 200,
       message: "User fetched successfully",
-      data: user,
+      data: userWithInviteCode,
     });
     return;
   } catch (error) {

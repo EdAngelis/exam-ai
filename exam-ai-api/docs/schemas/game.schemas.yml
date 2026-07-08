@@ -1,0 +1,181 @@
+Game:
+  type: object
+  properties:
+    _id:
+      type: string
+    hostUserId:
+      type: string
+    hostEmail:
+      type: string
+    opponentUserId:
+      type: string
+    opponentEmail:
+      type: string
+    examId:
+      type: string
+    status:
+      type: string
+      enum: [pending, accepted, in_progress, completed]
+    timeLimitSeconds:
+      type: integer
+    completionReason:
+      type: string
+      nullable: true
+      enum: [both_submitted, time_expired]
+    winnerUserId:
+      type: string
+      nullable: true
+    submissions:
+      type: array
+      items:
+        $ref: '#/GameSubmission'
+CreateGame:
+  type: object
+  properties:
+    examId:
+      type: string
+    inviteeEmail:
+      type: string
+      format: email
+    inviteeCode:
+      type: string
+      pattern: '^[0-9]{6}$'
+    timeLimitSeconds:
+      type: integer
+      description: Used only when the exam has no duration field.
+      minimum: 1
+  required:
+    - examId
+GameSubmission:
+  type: object
+  properties:
+    userId:
+      type: string
+    userEmail:
+      type: string
+    answers:
+      type: array
+      items:
+        $ref: '#/SubmittedAnswer'
+    score:
+      type: integer
+    submittedAt:
+      type: string
+      format: date-time
+SubmitGameAnswers:
+  type: object
+  properties:
+    answers:
+      type: array
+      items:
+        $ref: '#/SubmittedAnswer'
+  required:
+    - answers
+SubmittedAnswer:
+  type: object
+  properties:
+    questionId:
+      type: string
+    answer:
+      type: integer
+  required:
+    - questionId
+    - answer
+GamePlay:
+  type: object
+  properties:
+    game:
+      $ref: '#/GameSummary'
+    exam:
+      type: object
+      properties:
+        _id:
+          type: string
+        category:
+          type: string
+        subCategory:
+          type: string
+        subject:
+          type: string
+        duration:
+          type: integer
+        timeLimitSeconds:
+          type: integer
+        questions:
+          type: array
+          description: Questions without answer keys or incorrect-answer explanations.
+          items:
+            type: object
+GameSummary:
+  type: object
+  properties:
+    _id:
+      type: string
+    hostUserId:
+      type: string
+    hostEmail:
+      type: string
+    opponentUserId:
+      type: string
+    opponentEmail:
+      type: string
+    examId:
+      type: string
+    status:
+      type: string
+      enum: [pending, accepted, in_progress, completed]
+    timeLimitSeconds:
+      type: integer
+    winnerUserId:
+      type: string
+      nullable: true
+    completionReason:
+      type: string
+      nullable: true
+      enum: [both_submitted, time_expired]
+    scores:
+      type: object
+      properties:
+        host:
+          type: integer
+        opponent:
+          type: integer
+GameSubmissionResponse:
+  type: object
+  properties:
+    game:
+      $ref: '#/GameSummary'
+    submission:
+      $ref: '#/GameSubmission'
+    result:
+      nullable: true
+      $ref: '#/GameResult'
+GameResult:
+  type: object
+  properties:
+    gameId:
+      type: string
+    status:
+      type: string
+      enum: [completed]
+    completionReason:
+      type: string
+      enum: [both_submitted, time_expired]
+    winnerUserId:
+      type: string
+      nullable: true
+    isDraw:
+      type: boolean
+    host:
+      $ref: '#/GameParticipantResult'
+    opponent:
+      $ref: '#/GameParticipantResult'
+GameParticipantResult:
+  type: object
+  properties:
+    userId:
+      type: string
+    email:
+      type: string
+    score:
+      type: integer

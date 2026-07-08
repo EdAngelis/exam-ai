@@ -10,6 +10,7 @@ export interface UserT {
   validationToken?: string;
   resetPasswordToken?: string;
   refreshToken?: string;
+  gameInviteCode?: string;
   level?: number;
   students?: string[];
   created_at?: Date;
@@ -40,6 +41,9 @@ const VALIDATOR = {
         bsonType: "string",
       },
       refreshToken: {
+        bsonType: "string",
+      },
+      gameInviteCode: {
         bsonType: "string",
       },
       level: {
@@ -79,7 +83,14 @@ const ensureUserCollection = async (
       console.log("Validation changed");
     }
 
-    return db.collection<UserT>(collection.name);
+    const userCollection = db.collection<UserT>(collection.name);
+    await userCollection.createIndex(
+      { gameInviteCode: 1 },
+      { unique: true, sparse: true }
+    );
+    await userCollection.createIndex({ email: 1 }, { unique: true });
+
+    return userCollection;
   } catch (error) {
     console.error(`Error creating user collection ${collection.name}:`, error);
     throw error;
