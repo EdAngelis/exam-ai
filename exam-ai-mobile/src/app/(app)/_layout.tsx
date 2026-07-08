@@ -15,6 +15,15 @@ export default function AppLayout() {
       <Stack.Screen name="student" options={{ title: 'Students' }} />
       <Stack.Screen name="assign-exam" options={{ title: 'Assign exam' }} />
       <Stack.Screen name="settings" options={{ title: 'Account' }} />
+      <Stack.Screen name="game/new" options={{ title: 'Invite opponent' }} />
+      <Stack.Screen
+        name="game/[gameId]/lobby"
+        options={{ title: 'Game lobby' }}
+      />
+      <Stack.Screen
+        name="game/[gameId]/play"
+        options={{ title: 'Play game' }}
+      />
     </Stack>
   );
 }
