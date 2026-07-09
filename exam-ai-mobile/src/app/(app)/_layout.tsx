@@ -24,6 +24,10 @@ export default function AppLayout() {
         name="game/[gameId]/play"
         options={{ title: 'Play game' }}
       />
+      <Stack.Screen
+        name="game/[gameId]/result"
+        options={{ title: 'Game result' }}
+      />
     </Stack>
   );
 }

@@ -178,6 +178,17 @@ export default function MultiplayerScreen() {
                       {outcomeLabel(game)} · {game.scores.host}–
                       {game.scores.opponent}
                     </ThemedText>
+                    <Button
+                      title="View result"
+                      size="full"
+                      variant="secondary"
+                      onPress={() =>
+                        router.push({
+                          pathname: '/game/[gameId]/result',
+                          params: { gameId: game._id },
+                        })
+                      }
+                    />
                   </ThemedView>
                 );
               })}

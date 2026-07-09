@@ -1,5 +1,12 @@
 import { apiClient, type ApiEnvelope } from '@/lib/api-client';
-import type { CreateGameInput, GameSummary } from '@/types/game';
+import type {
+  CreateGameInput,
+  GameResult,
+  GameSummary,
+  PlayableGame,
+  SubmissionResponse,
+  SubmittedAnswer,
+} from '@/types/game';
 
 const createGame = async (input: CreateGameInput): Promise<GameSummary> => {
   const res = await apiClient.post<ApiEnvelope<GameSummary>>('games', input);
@@ -30,4 +37,38 @@ const startGame = async (id: string): Promise<GameSummary> => {
   return res.data;
 };
 
-export { createGame, listGames, getGame, acceptGame, startGame };
+const getPlayableGame = async (id: string): Promise<PlayableGame> => {
+  const res = await apiClient.get<ApiEnvelope<PlayableGame>>(
+    `games/${id}/play`,
+  );
+  return res.data;
+};
+
+const submitGameAnswers = async (
+  id: string,
+  answers: SubmittedAnswer[],
+): Promise<SubmissionResponse> => {
+  const res = await apiClient.post<ApiEnvelope<SubmissionResponse>>(
+    `games/${id}/submission`,
+    { answers },
+  );
+  return res.data;
+};
+
+const getGameResult = async (id: string): Promise<GameResult> => {
+  const res = await apiClient.get<ApiEnvelope<GameResult>>(
+    `games/${id}/result`,
+  );
+  return res.data;
+};
+
+export {
+  createGame,
+  listGames,
+  getGame,
+  acceptGame,
+  startGame,
+  getPlayableGame,
+  submitGameAnswers,
+  getGameResult,
+};
