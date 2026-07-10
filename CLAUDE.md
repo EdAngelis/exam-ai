@@ -12,7 +12,7 @@ The app follows a three-layer structure:
 
 1. **Pages (`app/`)** — Next.js App Router pages. All pages except the root signin are client components (`"use client"`). Pages call service functions directly.
 2. **Service layer (`service/`)** — Pure TypeScript modules that wrap `fetch` calls to `/api/proxy`. One file per resource (`auth`, `user`, `exams`, `questions`).
-3. **Proxy route (`app/api/proxy/route.ts`)** — A single Next.js API route handler that forwards all HTTP methods to the backend. It reads `path` from the query string to construct the backend URL, injects the `x-api-key` header, and forwards the request body for non-GET/HEAD/DELETE methods.
+3. **Proxy route (`app/api/proxy/route.ts`)** — A single Next.js API route handler that forwards all HTTP methods to the backend. It reads `path` from the query string to construct the backend URL, injects the `x-api-key` header, and forwards the request body for non-GET/HEAD/DELETE methods (reading it via `req.json()` — a POST/PUT with no body will throw here and return a 400, so any service call must always send at least `{}`). It also forwards `Authorization: Bearer <backendToken>` when the session carries one (see `auth.ts`), which the `/games/*` endpoints require in addition to `x-api-key`.
 
 All backend communication goes through `/api/proxy`. The backend URL is never exposed to the client; only the proxy uses `process.env.API_URL` and `process.env.API_KEY`.
 
@@ -31,7 +31,7 @@ Configured in `auth.ts` using NextAuth v5.
 **Callbacks:**
 - `signIn` — called after every successful login. Calls `createUser()` to upsert the user in the backend. Always returns `true`.
 - `session` — enriches the session object by fetching the user's `level` from the backend (`getUser(email)`) if it is not already in the token. Attaches `level` to `session.user`.
-- `jwt` — caches `id` and `level` from the user object into the JWT token on first login so subsequent requests do not re-fetch from the backend.
+- `jwt` — caches `id`, `level`, and `backendToken` from the user object into the JWT token on first login so subsequent requests do not re-fetch from the backend. For Google logins (which never reach `authorize`), it mints a backend JWT from the Google ID token via `googleSignInService`. `backendToken` is copied onto `session.user` by the `session` callback and forwarded by the proxy as `Authorization: Bearer`.
 
 **User levels:** `level === 0` indicates a student. Any non-zero level indicates a teacher. The `QuestionsFilter` component (question management + exam creation tools) is only rendered when `level !== 0`.
 
@@ -104,6 +104,9 @@ interface Exam {
 ### `NextAuthUser`
 Extends NextAuth's `User` with `level?: number`. Used to type `session.user` on the client.
 
+### Game (`models/game.ts`)
+Types for the two-player competitive exam game (epic: Game): `GameStatus` (`"pending" | "accepted" | "in_progress" | "completed"`), `GameSummary`, `CreateGameInput`, `PlayableGame` (+ `PlayableOption`/`PlayableQuestion`, answer keys stripped server-side), `SubmittedAnswer`, `GameResult` (+ `GameParticipantResult`), `SubmissionResponse`. These mirror `exam-ai-api`'s `/games/*` response shapes exactly — see `docs/schemas/game.schemas.yml` in that repo for the authoritative contract.
+
 ---
 
 ## Service layer
@@ -136,6 +139,20 @@ Extends NextAuth's `User` with `level?: number`. Used to type `session.user` on 
 - `regenerateQuestions(prompt, questions)` — POST `/questions/regenerate-questions`, returns `{ message }`
 - `getExams(userEmail)` — GET `/exams?userEmail=:userEmail`, returns `any[]` (note: duplicate of exams service)
 
+### `service/game.service.ts`
+Two-player competitive exam game (epic: Game). Backend requires `x-api-key` + bearer JWT on every call; the proxy forwards both automatically (see Architecture above). All POST/PUT calls send at least `{}` as the body, since the proxy's `req.json()` throws on an empty body.
+- `createGame({ examId, inviteeEmail? | inviteeCode?, timeLimitSeconds? })` — POST `/games`, returns `GameSummary`
+- `listGames()` — GET `/games`, returns `GameSummary[]`
+- `getGame(id)` — GET `/games/:id`, returns `GameSummary`
+- `acceptGame(id)` — POST `/games/:id/accept`, returns `GameSummary`
+- `startGame(id)` — POST `/games/:id/start`, returns `GameSummary`
+- `updateGameTimeLimit(id, timeLimitSeconds)` — PUT `/games/:id/time-limit`, host-only, only while `pending`/`accepted`, returns `GameSummary`
+- `getPlayableGame(id)` — GET `/games/:id/play`, returns `PlayableGame` (questions with answer keys stripped)
+- `submitGameAnswers(id, answers)` — POST `/games/:id/submission`, body `{ answers }`, returns `SubmissionResponse`
+- `getGameResult(id)` — GET `/games/:id/result`, returns `GameResult` (400 until the game is `completed` — expected while polling)
+
+There is no push/websocket mechanism; lobby/play/result pages poll on a `setInterval`. Determine "am I the host?" / "did I win?" by comparing emails (`hostEmail`/`opponentEmail`, or `result.host.email`/`result.opponent.email`) against `session.user.email` — `session.user.id` is never populated by the `session` callback.
+
 ---
 
 ## API layer
@@ -143,8 +160,8 @@ Extends NextAuth's `User` with `level?: number`. Used to type `session.user` on 
 The single proxy route at `app/api/proxy/route.ts` handles GET, POST, PUT, DELETE. It:
 1. Reads `path` from the query string
 2. Strips `path` from the remaining query string and appends it to `${API_URL}/${path}`
-3. For POST/PUT, reads the request body as JSON
-4. Adds `Content-Type: application/json` and `x-api-key: ${API_KEY}` headers
+3. For POST/PUT, reads the request body as JSON (throws → 400 if the body is empty)
+4. Adds `Content-Type: application/json` and `x-api-key: ${API_KEY}` headers, plus `Authorization: Bearer <backendToken>` when the session has one
 5. Returns the backend JSON response verbatim, or `{ error }` with status 400/500 on failure
 
 ---
@@ -163,6 +180,11 @@ The single proxy route at `app/api/proxy/route.ts` handles GET, POST, PUT, DELET
 | `/reset-password`   | Reads `token` from query param and submits a new password.                                     |
 | `/verify-email`     | 6-digit code input for email verification after signup.                                        |
 | `/about`            | Static placeholder page.                                                                       |
+| `/game`             | Multiplayer hub. Shows the user's invite code and their active/completed games (`GameHistory`). |
+| `/game/new?examId=` | Invite an opponent to a game for the given exam, by email or 6-digit code.                      |
+| `/game/lobby?gameId=` | Accept/start a game; host can edit the time limit before it starts. Polls every 3s.           |
+| `/game/play?gameId=`  | Timer, question-by-question play, submit; shows a waiting state until the opponent finishes. |
+| `/game/result?gameId=`| Winner/draw and both players' scores. Polls until the backend marks the game completed.      |
 
 ---
 
@@ -195,11 +217,12 @@ Components are split into two categories:
 
 | Component        | Purpose                                                                                         |
 |------------------|-------------------------------------------------------------------------------------------------|
-| `Header`         | Top bar with "Exam-AI" title (links to `/home`) and `SignOutButton`. Handles auth-based redirects. |
+| `Header`         | Top bar with "Exam-AI" title (links to `/home`), a "Multiplayer" nav link (`/game`), and `SignOutButton`. Handles auth-based redirects. |
 | `Footer`         | Bottom bar rendered in the root layout, visible on all pages                                   |
 | `SignIn`         | Email/password sign-in form + Google sign-in button                                            |
 | `ExamHistory`    | Paginated, searchable grid of past exams. Calls `getExams()`. Shows last 3 scores per exam.     |
 | `QuestionsFilter`| Category/subcategory/subject filter dropdowns. Creates and assigns exams. Teacher-only.        |
+| `GameHistory`    | Shows the user's invite code and lists active/completed games (epic: Game). Calls `listGames()`/`getUser()`. Used by `/game`. |
 
 Barrel export: `components/index.ts` exports `Button`, `Dropdown`, `InputButton`, `Table`, `MultiSelection`, `TextArea`, `Radios`.
 
@@ -237,4 +260,5 @@ Barrel export: `components/index.ts` exports `Button`, `Dropdown`, `InputButton`
 - **Do not expose `API_KEY` or `API_URL` to the client.** They have no `NEXT_PUBLIC_` prefix and must stay that way.
 - **Do not bypass the `Header` redirect logic** by adding custom route guards elsewhere — keep auth redirect behavior centralized in `Header`.
 - **Do not read `question.subject` without also checking `question.subJect`** — both casings exist in backend data. Use `question?.subject || question?.subJect`.
+- **Do not send a bodyless POST/PUT through `/api/proxy`** — it always calls `req.json()`, which throws on an empty body and returns a 400 before the request reaches the backend. Send `{}` at minimum.
 - **Do not commit without running `npm run build`** — the project uses `strict` TypeScript; type errors will break the build.

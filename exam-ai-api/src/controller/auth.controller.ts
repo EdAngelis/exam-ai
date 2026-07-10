@@ -8,6 +8,7 @@ import {
   fetchUser,
   fetchUserByEmail,
   createUser,
+  ensureGameInviteCode,
 } from "../repository/user.repository";
 import { comparePasswords, hashPassword } from "../tools/crypto";
 import { generateToken, verifyToken } from "../tools/jwt";
@@ -49,11 +50,21 @@ const signInController = async (req: Request, res: Response) => {
       return;
     }
 
-    user.password = undefined;
+    const userWithInviteCode = await ensureGameInviteCode(user._id);
+    if (!userWithInviteCode) {
+      response(res, {
+        message: "User not found",
+        data: null,
+        status: 404,
+      });
+      return;
+    }
+
+    userWithInviteCode.password = undefined;
     const token = generateToken({ email });
     response(res, {
       message: "Sign-in successful",
-      data: user,
+      data: userWithInviteCode,
       token,
       status: 200,
     });
@@ -121,11 +132,21 @@ const googleWebController = async (req: Request, res: Response) => {
       return;
     }
 
+    const userWithInviteCode = await ensureGameInviteCode(user._id);
+    if (!userWithInviteCode) {
+      response(res, {
+        message: "User not found",
+        data: null,
+        status: 404,
+      });
+      return;
+    }
+
     const token = generateToken({ email: payload.email });
-    user.password = undefined;
+    userWithInviteCode.password = undefined;
     response(res, {
       message: "Google sign-in successful",
-      data: user,
+      data: userWithInviteCode,
       token,
       status: 200,
     });

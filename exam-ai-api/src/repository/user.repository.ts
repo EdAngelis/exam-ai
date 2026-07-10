@@ -2,10 +2,14 @@ import { ObjectId } from "mongodb";
 import { ensureCollection } from "../models/index";
 import { getCollection, type UserT } from "../models/user.model";
 
+const generateGameInviteCode = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
+
 const createUser = async (user: UserT) => {
   const User = await getCollection();
   ensureCollection<UserT>(User);
   user.created_at = new Date();
+  user.gameInviteCode = user.gameInviteCode || generateGameInviteCode();
   return await User.insertOne(user);
 };
 
@@ -24,6 +28,45 @@ const fetchUserByEmail = async (email: string) => {
   ensureCollection<UserT>(User);
   const user = await User.findOne({ email }, { projection: { password: 0 } });
   return user;
+};
+
+const fetchUserByGameInviteCode = async (gameInviteCode: string) => {
+  const User = await getCollection();
+  ensureCollection<UserT>(User);
+  const user = await User.findOne(
+    { gameInviteCode },
+    { projection: { password: 0 } }
+  );
+  return user;
+};
+
+const ensureGameInviteCode = async (id: ObjectId) => {
+  const User = await getCollection();
+  ensureCollection<UserT>(User);
+
+  const existingUser = await User.findOne(
+    { _id: id },
+    { projection: { password: 0 } }
+  );
+
+  if (!existingUser || existingUser.gameInviteCode) {
+    return existingUser;
+  }
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const gameInviteCode = generateGameInviteCode();
+    const result = await User.findOneAndUpdate(
+      { _id: id, gameInviteCode: { $exists: false } },
+      { $set: { gameInviteCode, updated_at: new Date() } },
+      { returnDocument: "after", projection: { password: 0 } }
+    );
+
+    if (result) {
+      return result;
+    }
+  }
+
+  throw new Error("Unable to generate a unique game invite code.");
 };
 
 const signIn = async (email: string) => {
@@ -99,6 +142,8 @@ export {
   signIn,
   findByValidationToken,
   fetchUserByEmail,
+  fetchUserByGameInviteCode,
+  ensureGameInviteCode,
   insertStudent,
   removeStudent,
 };

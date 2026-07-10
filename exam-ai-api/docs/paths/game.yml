@@ -1,0 +1,206 @@
+root:
+  post:
+    summary: Create a pending game invitation
+    operationId: createGame
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/game.schemas.yml#/CreateGame'
+    responses:
+      '201':
+        description: Game created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameSummary'
+      '400':
+        description: Invalid invitation request
+      '403':
+        description: User cannot create a game for this exam
+      '404':
+        description: Invitee or exam not found
+  get:
+    summary: List games for the current participant
+    operationId: listGames
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    responses:
+      '200':
+        description: Games fetched successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/game.schemas.yml#/GameSummary'
+id:
+  get:
+    summary: Get a game by id
+    operationId: getGame
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    responses:
+      '200':
+        description: Game fetched successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameSummary'
+      '403':
+        description: Only participants can view the game
+      '404':
+        description: Game not found
+accept:
+  post:
+    summary: Accept a pending game invitation
+    operationId: acceptGame
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    responses:
+      '200':
+        description: Game accepted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameSummary'
+      '403':
+        description: Only the invited opponent can accept
+start:
+  post:
+    summary: Start an accepted game
+    operationId: startGame
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    responses:
+      '200':
+        description: Game started successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameSummary'
+      '400':
+        description: Game must be accepted before starting
+time-limit:
+  put:
+    summary: Update the time limit (in seconds) for a game that has not started yet
+    operationId: updateGameTimeLimit
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/game.schemas.yml#/UpdateGameTimeLimit'
+    responses:
+      '200':
+        description: Time limit updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameSummary'
+      '400':
+        description: Time limit can only be changed before the game starts
+      '403':
+        description: Only the host can update the time limit
+play:
+  get:
+    summary: Fetch playable exam data for an in-progress game
+    operationId: getPlayableGame
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    responses:
+      '200':
+        description: Returns game and exam questions without answer keys
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GamePlay'
+      '400':
+        description: Game is not in progress
+submission:
+  post:
+    summary: Submit answers for the current participant
+    operationId: submitGameAnswers
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/game.schemas.yml#/SubmitGameAnswers'
+    responses:
+      '200':
+        description: Submission saved. If both players submitted, includes the completed result.
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameSubmissionResponse'
+      '400':
+        description: Game is not in progress
+result:
+  get:
+    summary: Fetch the completed game result
+    operationId: getGameResult
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    responses:
+      '200':
+        description: Completed result with both scores and winner or draw
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameResult'
+      '400':
+        description: Result is not ready
+

@@ -142,6 +142,23 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
     }
   };
 
+  const startGame = async () => {
+    setMessage(null);
+    if (filtered.length === 0) {
+      setMessage('Select at least one question to start a game.');
+      return;
+    }
+    try {
+      const resp = await insertExam(buildExam());
+      router.push({
+        pathname: '/game/new',
+        params: { examId: resp.exam.insertedId },
+      });
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : 'Could not create exam.');
+    }
+  };
+
   const goToAssignExam = () => {
     setMessage(null);
     if (filtered.length === 0) {
@@ -215,6 +232,12 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
       <InlineMessage message={message} />
 
       <Button title="Start exam" size="full" onPress={startExam} />
+      <Button
+        title="Start game"
+        size="full"
+        variant="secondary"
+        onPress={startGame}
+      />
       <Button
         title="Assign exam to students"
         size="full"

@@ -33,6 +33,10 @@ const ExamHistory = ({ userEmail }: { userEmail: string }) => {
     router.push(`/exam?examId=${examId}`);
   };
 
+  const handleStartGame = (examId: string) => {
+    router.push(`/game/new?examId=${examId}`);
+  };
+
   useEffect(() => {
     handlerPagination();
   }, [currentPage, searchTerm, exams]);
@@ -120,6 +124,12 @@ const ExamHistory = ({ userEmail }: { userEmail: string }) => {
                   onClick={() => handleViewExam(exam._id as string)}
                 >
                   {exam.answers ? "Refazer" : "Iniciar Exame"}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => handleStartGame(exam._id as string)}
+                >
+                  Iniciar Jogo
                 </Button>
               </div>
             </div>

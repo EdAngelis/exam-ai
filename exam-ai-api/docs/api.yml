@@ -9,6 +9,8 @@ tags:
     description: Operations related to authentication
   - name: Files
     description: Operations related to files
+  - name: Games
+    description: Operations related to competitive exam games
 paths:
   /users:
     $ref: './docs/paths/user.yml#/root'
@@ -40,6 +42,22 @@ paths:
     $ref: './docs/paths/file.yml#/root'
   /files/{id}:
     $ref: './docs/paths/file.yml#/id'
+  /games:
+    $ref: './docs/paths/game.yml#/root'
+  /games/{id}:
+    $ref: './docs/paths/game.yml#/id'
+  /games/{id}/accept:
+    $ref: './docs/paths/game.yml#/accept'
+  /games/{id}/start:
+    $ref: './docs/paths/game.yml#/start'
+  /games/{id}/time-limit:
+    $ref: './docs/paths/game.yml#/time-limit'
+  /games/{id}/play:
+    $ref: './docs/paths/game.yml#/play'
+  /games/{id}/submission:
+    $ref: './docs/paths/game.yml#/submission'
+  /games/{id}/result:
+    $ref: './docs/paths/game.yml#/result'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -67,5 +85,7 @@ components:
       $ref: './docs/schemas/auth.schemas.yml#/GoogleSignIn'
     file:
       $ref: './docs/schemas/file.schemas.yml#/File'
+    game:
+      $ref: './docs/schemas/game.schemas.yml#/Game'
 
 

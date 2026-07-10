@@ -125,6 +125,17 @@ export function ExamHistory({ userEmail }: { userEmail: string }) {
                   })
                 }
               />
+              <Button
+                title="Start game"
+                size="full"
+                variant="secondary"
+                onPress={() =>
+                  router.push({
+                    pathname: '/game/new',
+                    params: { examId: exam._id as string },
+                  })
+                }
+              />
             </ThemedView>
           );
         })

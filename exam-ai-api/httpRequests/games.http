@@ -1,0 +1,84 @@
+### Game requests
+# REST Client file for game endpoints.
+@baseUrl = http://localhost:3001
+@apiKey = my-api-key
+@accessToken = replace-with-jwt
+@gameId = replace-with-game-id
+@examId = replace-with-exam-id
+
+### Games - Create pending game by email
+POST {{baseUrl}}/games
+Content-Type: application/json
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "examId": "{{examId}}",
+  "inviteeEmail": "opponent@example.com",
+  "timeLimitSeconds": 1800
+}
+
+### Games - Create pending game by invite code
+POST {{baseUrl}}/games
+Content-Type: application/json
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "examId": "{{examId}}",
+  "inviteeCode": "123456"
+}
+
+### Games - List lobby/history games
+GET {{baseUrl}}/games
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+### Games - Get game
+GET {{baseUrl}}/games/{{gameId}}
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+### Games - Accept invitation
+POST {{baseUrl}}/games/{{gameId}}/accept
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+### Games - Start accepted game
+POST {{baseUrl}}/games/{{gameId}}/start
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+### Games - Update time limit (host only, before start)
+PUT {{baseUrl}}/games/{{gameId}}/time-limit
+Content-Type: application/json
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "timeLimitSeconds": 900
+}
+
+### Games - Fetch playable exam data
+GET {{baseUrl}}/games/{{gameId}}/play
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+### Games - Submit answers
+POST {{baseUrl}}/games/{{gameId}}/submission
+Content-Type: application/json
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "answers": [
+    { "questionId": "replace-with-question-id-1", "answer": 0 },
+    { "questionId": "replace-with-question-id-2", "answer": 2 },
+    { "questionId": "replace-with-question-id-3", "answer": 1 }
+  ]
+}
+
+### Games - Fetch completed result
+GET {{baseUrl}}/games/{{gameId}}/result
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}

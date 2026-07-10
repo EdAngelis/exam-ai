@@ -7,6 +7,7 @@ interface User {
   password?: string;
   name?: string;
   id?: string;
+  gameInviteCode?: string;
 }
 
 export default User;
