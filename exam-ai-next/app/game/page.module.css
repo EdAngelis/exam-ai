@@ -1,0 +1,8 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.gameHistory {
+  margin-top: 1rem;
+}

@@ -142,6 +142,22 @@ export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
     router.push("/assign-exam");
   };
 
+  const goToStartGame = async () => {
+    if (questionsFiltered.length === 0) {
+      alert(
+        "Você precisa selecionar ao menos uma questão para iniciar o jogo"
+      );
+      return;
+    }
+    const exam = toBuildExam();
+    const resp = await insertExam(exam);
+    const examId = resp.exam.insertedId;
+
+    if (resp.message === "Exam created successfully") {
+      router.push(`/game/new?examId=${examId}`);
+    }
+  };
+
   return (
     <div className={style.containerV}>
       <>
@@ -212,6 +228,9 @@ export default function QuestionsFilter({ userEmail }: { userEmail: string }) {
             </Button>
             <Button type="button" onClick={() => goToAssignExam()}>
               Gerar Exame<br></br> para Estudantes
+            </Button>
+            <Button type="button" onClick={() => goToStartGame()}>
+              Iniciar Jogo
             </Button>
           </div>
         </div>

@@ -1,0 +1,100 @@
+.gameHistory {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px;
+}
+
+.gameHistory h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 2rem 0;
+  font-family: var(--font-geist-sans);
+  color: var(--blue-900);
+}
+
+.inviteCard {
+  border-radius: 20px;
+  background-color: #fff;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid black;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.inviteCard p {
+  margin: 0;
+}
+
+.inviteCard h3 {
+  margin: 0.5rem 0 0;
+  font-size: 1.75rem;
+  letter-spacing: 4px;
+  color: var(--sky-700);
+}
+
+.sectionTitle {
+  margin: 1.5rem 0 0.5rem;
+}
+
+.emptyState {
+  color: #666;
+}
+
+.gameGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .gameGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gameCard {
+  min-height: 110px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  border: 1px solid black;
+  gap: 16px;
+}
+
+.gameCard:hover {
+  transform: translateY(-5px);
+}
+
+.cardText {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.cardText h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardText p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.gameCard button {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  font-size: 14px;
+}

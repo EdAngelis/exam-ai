@@ -1,0 +1,108 @@
+.fontFamily {
+  font-family: var(--font-geist-sans);
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.questionContainer {
+  width: 800px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  text-align: left;
+}
+
+.topRow {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.timer {
+  min-width: 80px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--sky-700);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  min-height: 70px;
+}
+
+.optionsContainer {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.option {
+  background-color: var(--sky-300);
+  padding: 1.5rem 1rem;
+  margin-bottom: 10px;
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.selected {
+  background-color: var(--sky-700);
+  color: white;
+}
+
+.navigationButtons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-direction: row;
+  width: 100%;
+}
+
+.navigationButtons button {
+  padding: 12px 24px;
+}
+
+.questionNumber {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.progressContainer {
+  --progress: 0%;
+  --bar-color: var(--sky-700);
+  --background-color: #ddd;
+  --height: 20px;
+
+  width: 100%;
+  background-color: var(--background-color);
+  overflow: hidden;
+  height: var(--height);
+  border: 1px solid var(--sky-700);
+}
+
+.progressBar {
+  width: var(--progress);
+  height: 100%;
+  background-color: var(--bar-color);
+  transition: width 0.3s ease-in-out;
+}
