@@ -46,12 +46,22 @@ File-based via `expo-router`, rooted at `src/app/` (`typedRoutes` is on, so link
 src/app/
   _layout.tsx              Root: ThemeProvider + AuthProvider + <Stack.Protected> guards
   (app)/                   Authenticated group (a Stack)
-    _layout.tsx            Stack: index, generator, exam, student, settings
-    index.tsx              Dashboard  →  "/"
+    _layout.tsx            Stack: (tabs), generator, exam, student, assign-exam, settings, game/*
+    (tabs)/                Dashboard bottom tab navigator  →  "/"
+      _layout.tsx          NativeTabs: Home, Multi-player, History
+      index.tsx            Home tab (QuestionsFilter + ExamHistory)
+      multiplayer.tsx       Multi-player tab: invite code, active games, recent game results
+      history.tsx           History tab
     generator.tsx          AI question generation
     exam.tsx               Exam-taking
     student.tsx            Student management (teachers)
+    assign-exam.tsx        Assign an exam to students
     settings.tsx           Account + sign out
+    game/                  Two-player competitive exam game (epic: Game)
+      new.tsx               Invite an opponent by email or 6-digit code
+      [gameId]/lobby.tsx     Accept/start, host can edit the time limit before start
+      [gameId]/play.tsx      Timer, question nav, submit, waiting-for-opponent state
+      [gameId]/result.tsx    Winner/draw + scores
   (auth)/                  Public group (a Stack)
     _layout.tsx
     index.tsx              Redirects → /sign-in  ("/")
@@ -153,6 +163,7 @@ One module per resource, mirroring `exam-ai-next/service/*` function-for-functio
 | `user.service.ts` | `getUser`, `updateUser`, `addStudent`, `removeStudent` |
 | `exams.service.ts` | `getExam`, `getExams`, `updateResult`, `insertExam`, `insertStudentsExams` |
 | `questions.service.ts` | `getQuestions`, `getCategory`, `getSubcategory`, `generateQuestions`, `regenerateQuestions` |
+| `game.service.ts` | `createGame`, `listGames`, `getGame`, `acceptGame`, `startGame`, `updateGameTimeLimit`, `getPlayableGame`, `submitGameAnswers`, `getGameResult` — all hit `/games/*` on `exam-ai-api` (client-agnostic; not part of the mobile-specific backend changes in §12), same `x-mobile-api-key` + bearer JWT auth as every other authenticated route |
 
 Notable contract fix: `insertStudentsExams` maps the backend's `data`-wrapped result to the documented `{ acknowledged, insertedCount, message }` shape (the web version's type was wrong).
 
@@ -161,6 +172,8 @@ Notable contract fix: `insertStudentsExams` maps the backend's `data`-wrapped re
 ## 7. Data models — `src/models/`
 
 Ported as-is from the web app (dropping the NextAuth-specific type): `User`, `Question` (+ `Option`), `Exam`. Note the legacy dual casing `question.subject` / `question.subJect` — always read both.
+
+`src/types/game.ts` adds the Game domain (not ported from web — added directly, then mirrored back into `exam-ai-next`): `GameStatus`, `GameSummary`, `CreateGameInput`, `PlayableGame` (+`PlayableQuestion`, answer keys stripped server-side), `SubmittedAnswer`, `GameResult`, `SubmissionResponse`. See `exam-ai-api`'s `docs/schemas/game.schemas.yml` for the authoritative shapes.
 
 ---
 
@@ -226,7 +239,7 @@ Missing required vars log a console warning in dev. `.env` is gitignored; `.env.
 | Google | NextAuth Google provider (browser) | `expo-auth-session` ID token → `/auth/mobile/google` |
 | Routing | Next.js App Router pages | expo-router groups + `<Stack.Protected>` |
 | Styling | CSS Modules | RN `StyleSheet` + theme tokens |
-| Navigation shape | dashboard + header links | dashboard + Stack (no tab bar) |
+| Navigation shape | dashboard + header links | bottom tab bar (Home/Multi-player/History) + pushed Stack screens |
 
 ---
 
@@ -235,4 +248,4 @@ Missing required vars log a console warning in dev. `.env` is gitignored; `.env.
 - **Password-reset deep link**: the reset email from `exam-ai-api` points at the web app. The mobile screen reads `?token=` (scheme `examaimobile`), but isn't end-to-end until the email template targets `examaimobile://reset-password?token=...`.
 - **Google audience**: native client IDs produce ID tokens whose audience differs from the web client ID; the backend verifies against a single `GOOGLE_CLIENT_ID`. Use the web client ID across both, or extend the backend to accept multiple audiences.
 - **No automated tests** yet. QA is currently manual + `tsc`/`lint`/web-export smoke test.
-- **Real-time multiplayer** is explicitly out of scope (see `PLAN.md`).
+- **The two-player Game feature is HTTP-polling based, not real-time.** `PLAN.md` originally scoped "real-time multiplayer" (a WebSocket layer) out of the web-port project; the epic that shipped afterward (`docs/epics/game.md`) implements competitive two-player games via plain REST + client-side polling on `exam-ai-api`, `exam-ai-mobile`, and `exam-ai-next` instead — no WebSocket layer exists. A true real-time transport is still out of scope.
