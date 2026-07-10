@@ -9,6 +9,10 @@ const createGameSchema = Joi.object({
   timeLimitSeconds: Joi.number().integer().min(1),
 }).xor("inviteeEmail", "inviteeCode");
 
+const updateTimeLimitSchema = Joi.object({
+  timeLimitSeconds: Joi.number().integer().min(60).required(),
+});
+
 const submissionSchema = Joi.object({
   answers: Joi.array()
     .items(
@@ -42,3 +46,4 @@ const validate =
 
 export const validateCreateGame = validate(createGameSchema);
 export const validateGameSubmission = validate(submissionSchema);
+export const validateUpdateTimeLimit = validate(updateTimeLimitSchema);

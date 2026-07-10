@@ -50,6 +50,8 @@ paths:
     $ref: './docs/paths/game.yml#/accept'
   /games/{id}/start:
     $ref: './docs/paths/game.yml#/start'
+  /games/{id}/time-limit:
+    $ref: './docs/paths/game.yml#/time-limit'
   /games/{id}/play:
     $ref: './docs/paths/game.yml#/play'
   /games/{id}/submission:

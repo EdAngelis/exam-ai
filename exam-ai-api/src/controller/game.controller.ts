@@ -12,6 +12,7 @@ import {
   listGames,
   startGame,
   submitAnswers,
+  updateTimeLimit,
 } from "../repository/game.repository";
 
 const getCurrentUser = async (req: Request) => {
@@ -120,6 +121,24 @@ const startGameController = async (req: Request, res: Response) => {
   }
 };
 
+const updateTimeLimitController = async (req: Request, res: Response) => {
+  try {
+    const user = await getCurrentUser(req);
+    const game = await updateTimeLimit(
+      req.params.id,
+      user,
+      req.body.timeLimitSeconds
+    );
+    response(res, {
+      status: 200,
+      message: "Time limit updated successfully",
+      data: game,
+    });
+  } catch (error) {
+    handleGameError(res, error);
+  }
+};
+
 const getPlayableGameController = async (req: Request, res: Response) => {
   try {
     const user = await getCurrentUser(req);
@@ -168,6 +187,7 @@ export {
   getGameController,
   acceptGameController,
   startGameController,
+  updateTimeLimitController,
   getPlayableGameController,
   submitAnswersController,
   getGameResultController,

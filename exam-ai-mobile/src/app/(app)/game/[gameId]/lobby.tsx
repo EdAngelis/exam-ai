@@ -4,12 +4,18 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/atoms/button';
 import { Loader } from '@/components/atoms/loader';
+import { TextField } from '@/components/atoms/text-field';
 import { InlineMessage } from '@/components/molecules/inline-message';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useAuth } from '@/context/auth-context';
-import { acceptGame, getGame, startGame } from '@/service/game.service';
+import {
+  acceptGame,
+  getGame,
+  startGame,
+  updateGameTimeLimit,
+} from '@/service/game.service';
 import type { GameStatus, GameSummary } from '@/types/game';
 
 const POLL_INTERVAL_MS = 3000;
@@ -32,6 +38,12 @@ export default function GameLobbyScreen() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [busy, setBusy] = useState<'accept' | 'start' | null>(null);
   const cancelledRef = useRef(false);
+
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState('');
+  const [timeLimitError, setTimeLimitError] = useState<string | null>(null);
+  const [timeLimitSaved, setTimeLimitSaved] = useState(false);
+  const [savingTimeLimit, setSavingTimeLimit] = useState(false);
+  const timeLimitInitialized = useRef(false);
 
   useEffect(() => {
     if (!gameId) return;
@@ -78,6 +90,15 @@ export default function GameLobbyScreen() {
       });
     }
   }, [game?.status, gameId, router]);
+
+  // Seed the editable minutes field once from the loaded game, so the 3s
+  // lobby poll doesn't clobber the host's in-progress edit.
+  useEffect(() => {
+    if (game && !timeLimitInitialized.current) {
+      setTimeLimitMinutes(String(Math.round(game.timeLimitSeconds / 60)));
+      timeLimitInitialized.current = true;
+    }
+  }, [game]);
 
   if (loading) return <Loader />;
 
@@ -129,6 +150,32 @@ export default function GameLobbyScreen() {
   const canAccept = isOpponent && game.status === 'pending';
   const canStart = isHost && game.status === 'accepted';
   const waitingForOpponent = isHost && game.status === 'pending';
+  const canEditTimeLimit =
+    isHost && (game.status === 'pending' || game.status === 'accepted');
+
+  const onSaveTimeLimit = async () => {
+    if (!gameId) return;
+    const minutes = Number(timeLimitMinutes);
+    if (!Number.isInteger(minutes) || minutes < 1) {
+      setTimeLimitError('Enter a whole number of at least 1 minute.');
+      return;
+    }
+
+    setTimeLimitError(null);
+    setSavingTimeLimit(true);
+    try {
+      const next = await updateGameTimeLimit(gameId, minutes * 60);
+      setGame(next);
+      setTimeLimitSaved(true);
+      setTimeout(() => setTimeLimitSaved(false), 2000);
+    } catch (e) {
+      setTimeLimitError(
+        e instanceof Error ? e.message : 'Could not update the time limit.',
+      );
+    } finally {
+      setSavingTimeLimit(false);
+    }
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -159,6 +206,32 @@ export default function GameLobbyScreen() {
               {Math.round(game.timeLimitSeconds / 60)} minutes
             </ThemedText>
           </ThemedView>
+
+          {canEditTimeLimit && (
+            <ThemedView type="backgroundElement" style={styles.card}>
+              <ThemedText type="smallBold">Change time limit</ThemedText>
+              <View style={styles.timeLimitRow}>
+                <View style={styles.timeLimitInputWrapper}>
+                  <TextField
+                    value={timeLimitMinutes}
+                    onChangeText={setTimeLimitMinutes}
+                    keyboardType="number-pad"
+                    editable={!savingTimeLimit}
+                  />
+                </View>
+                <ThemedText>minutes</ThemedText>
+                <Button
+                  title="Save"
+                  onPress={onSaveTimeLimit}
+                  loading={savingTimeLimit}
+                />
+              </View>
+              <InlineMessage message={timeLimitError} />
+              {timeLimitSaved && (
+                <InlineMessage message="Time limit updated." variant="success" />
+              )}
+            </ThemedView>
+          )}
 
           {waitingForOpponent && (
             <ThemedText type="small" themeColor="textSecondary">
@@ -234,5 +307,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: Spacing.three,
+  },
+  timeLimitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
+  },
+  timeLimitInputWrapper: {
+    width: 70,
   },
 });

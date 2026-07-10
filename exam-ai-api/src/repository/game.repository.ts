@@ -512,6 +512,37 @@ const submitAnswers = async (
   };
 };
 
+const updateTimeLimit = async (
+  id: string,
+  user: CurrentUser,
+  timeLimitSeconds: number
+) => {
+  const game = await findGameForUser(id, user);
+  if (game.hostUserId !== userId(user)) {
+    throw new GameRepositoryError(403, "Only the host can update the time limit");
+  }
+
+  if (game.status !== "pending" && game.status !== "accepted") {
+    throw new GameRepositoryError(
+      400,
+      "Time limit can only be changed before the game starts"
+    );
+  }
+
+  const updatedGame = await getGames().findOneAndUpdate(
+    { _id: game._id },
+    {
+      $set: {
+        timeLimitSeconds,
+        updated_at: new Date(),
+      },
+    },
+    { returnDocument: "after" }
+  );
+
+  return updatedGame ? summarizeGame(updatedGame) : null;
+};
+
 const getResult = async (id: string, user: CurrentUser) => {
   const game = await findGameForUser(id, user);
   if (game.status !== "completed") {
@@ -536,6 +567,7 @@ export {
   getGame,
   acceptGame,
   startGame,
+  updateTimeLimit,
   getPlayableGame,
   submitAnswers,
   getResult,

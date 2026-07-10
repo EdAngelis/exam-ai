@@ -49,6 +49,16 @@ POST {{baseUrl}}/games/{{gameId}}/start
 x-api-key: {{apiKey}}
 Authorization: Bearer {{accessToken}}
 
+### Games - Update time limit (host only, before start)
+PUT {{baseUrl}}/games/{{gameId}}/time-limit
+Content-Type: application/json
+x-api-key: {{apiKey}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "timeLimitSeconds": 900
+}
+
 ### Games - Fetch playable exam data
 GET {{baseUrl}}/games/{{gameId}}/play
 x-api-key: {{apiKey}}

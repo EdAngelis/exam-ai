@@ -37,6 +37,17 @@ const startGame = async (id: string): Promise<GameSummary> => {
   return res.data;
 };
 
+const updateGameTimeLimit = async (
+  id: string,
+  timeLimitSeconds: number,
+): Promise<GameSummary> => {
+  const res = await apiClient.put<ApiEnvelope<GameSummary>>(
+    `games/${id}/time-limit`,
+    { timeLimitSeconds },
+  );
+  return res.data;
+};
+
 const getPlayableGame = async (id: string): Promise<PlayableGame> => {
   const res = await apiClient.get<ApiEnvelope<PlayableGame>>(
     `games/${id}/play`,
@@ -68,6 +79,7 @@ export {
   getGame,
   acceptGame,
   startGame,
+  updateGameTimeLimit,
   getPlayableGame,
   submitGameAnswers,
   getGameResult,

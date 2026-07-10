@@ -49,3 +49,18 @@
   gap: 1rem;
   margin-top: 1rem;
 }
+
+.timeLimitRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.timeLimitInput {
+  width: 70px;
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid black;
+}

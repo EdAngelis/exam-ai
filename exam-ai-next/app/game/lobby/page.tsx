@@ -5,8 +5,14 @@ import { useSession } from "next-auth/react";
 import Header from "../../../components/sessions/header/header";
 import Loader from "@/components/elements/loader/loader";
 import ErrorToast from "@/components/elements/toast/error";
+import SuccessToast from "@/components/elements/toast/success";
 import { Button } from "@/components";
-import { acceptGame, getGame, startGame } from "@/service/game.service";
+import {
+  acceptGame,
+  getGame,
+  startGame,
+  updateGameTimeLimit,
+} from "@/service/game.service";
 import { GameStatus, GameSummary } from "@/models";
 import styles from "./page.module.css";
 
@@ -32,6 +38,12 @@ export default function GameLobbyPage() {
   const [actionError, setActionError] = useState<string>("");
   const [busy, setBusy] = useState<"accept" | "start" | null>(null);
   const gameRef = useRef<GameSummary | null>(null);
+
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState<string>("");
+  const [timeLimitError, setTimeLimitError] = useState<string>("");
+  const [timeLimitSuccess, setTimeLimitSuccess] = useState<boolean>(false);
+  const [savingTimeLimit, setSavingTimeLimit] = useState<boolean>(false);
+  const timeLimitInitialized = useRef(false);
 
   useEffect(() => {
     if (!gameId) return;
@@ -75,6 +87,13 @@ export default function GameLobbyPage() {
     }
   }, [game?.status, gameId, router]);
 
+  useEffect(() => {
+    if (game && !timeLimitInitialized.current) {
+      setTimeLimitMinutes(String(Math.round(game.timeLimitSeconds / 60)));
+      timeLimitInitialized.current = true;
+    }
+  }, [game]);
+
   if (loading) return <Loader />;
 
   if (!game) {
@@ -96,6 +115,34 @@ export default function GameLobbyPage() {
   const canAccept = isOpponent && game.status === "pending";
   const canStart = isHost && game.status === "accepted";
   const waitingForOpponent = isHost && game.status === "pending";
+  const canEditTimeLimit =
+    isHost && (game.status === "pending" || game.status === "accepted");
+
+  const onSaveTimeLimit = async () => {
+    const minutes = Number(timeLimitMinutes);
+    if (!Number.isInteger(minutes) || minutes < 1) {
+      setTimeLimitError("Informe um número inteiro de ao menos 1 minuto.");
+      return;
+    }
+
+    setTimeLimitError("");
+    setSavingTimeLimit(true);
+    try {
+      const next = await updateGameTimeLimit(gameId, minutes * 60);
+      gameRef.current = next;
+      setGame(next);
+      setTimeLimitSuccess(true);
+      setTimeout(() => setTimeLimitSuccess(false), 2000);
+    } catch (err) {
+      setTimeLimitError(
+        err instanceof Error
+          ? err.message
+          : "Não foi possível atualizar o tempo limite.",
+      );
+    } finally {
+      setSavingTimeLimit(false);
+    }
+  };
 
   const onAccept = async () => {
     setActionError("");
@@ -149,6 +196,35 @@ export default function GameLobbyPage() {
           <strong>Tempo limite</strong>
           <p>{Math.round(game.timeLimitSeconds / 60)} minutos</p>
         </div>
+
+        {canEditTimeLimit && (
+          <div className={styles.card}>
+            <strong>Alterar tempo limite</strong>
+            <div className={styles.timeLimitRow}>
+              <input
+                type="number"
+                min={1}
+                step={1}
+                className={styles.timeLimitInput}
+                value={timeLimitMinutes}
+                onChange={(e) => setTimeLimitMinutes(e.target.value)}
+                disabled={savingTimeLimit}
+              />
+              <span>minutos</span>
+              <Button
+                type="button"
+                onClick={onSaveTimeLimit}
+                disabled={savingTimeLimit}
+              >
+                Salvar
+              </Button>
+            </div>
+            {timeLimitError && <ErrorToast message={timeLimitError} />}
+            {timeLimitSuccess && (
+              <SuccessToast message="Tempo limite atualizado." />
+            )}
+          </div>
+        )}
 
         {waitingForOpponent && (
           <p className={styles.hint}>

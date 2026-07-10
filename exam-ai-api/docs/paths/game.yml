@@ -109,6 +109,34 @@ start:
               $ref: '../schemas/game.schemas.yml#/GameSummary'
       '400':
         description: Game must be accepted before starting
+time-limit:
+  put:
+    summary: Update the time limit (in seconds) for a game that has not started yet
+    operationId: updateGameTimeLimit
+    tags:
+      - Games
+    security:
+      - ApiKeyAuth: []
+        BearerAuth: []
+      - MobileApiKeyAuth: []
+        BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/game.schemas.yml#/UpdateGameTimeLimit'
+    responses:
+      '200':
+        description: Time limit updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/game.schemas.yml#/GameSummary'
+      '400':
+        description: Time limit can only be changed before the game starts
+      '403':
+        description: Only the host can update the time limit
 play:
   get:
     summary: Fetch playable exam data for an in-progress game

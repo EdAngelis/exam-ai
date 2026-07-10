@@ -10,10 +10,12 @@ import {
   listGamesController,
   startGameController,
   submitAnswersController,
+  updateTimeLimitController,
 } from "../controller/game.controller";
 import {
   validateCreateGame,
   validateGameSubmission,
+  validateUpdateTimeLimit,
 } from "../middlewares/validators/game.validator";
 
 const router = express.Router();
@@ -25,6 +27,7 @@ router.get("/", listGamesController);
 router.get("/:id", getGameController);
 router.post("/:id/accept", acceptGameController);
 router.post("/:id/start", startGameController);
+router.put("/:id/time-limit", validateUpdateTimeLimit, updateTimeLimitController);
 router.get("/:id/play", getPlayableGameController);
 router.post("/:id/submission", validateGameSubmission, submitAnswersController);
 router.get("/:id/result", getGameResultController);

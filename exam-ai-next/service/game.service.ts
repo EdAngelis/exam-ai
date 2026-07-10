@@ -45,6 +45,7 @@ const acceptGame = async (id: string): Promise<GameSummary> => {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({}),
   });
   const result = await response.json();
   if (!result.data) {
@@ -59,10 +60,29 @@ const startGame = async (id: string): Promise<GameSummary> => {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({}),
   });
   const result = await response.json();
   if (!result.data) {
     throw new Error(result.message || "Não foi possível iniciar o jogo.");
+  }
+  return result.data;
+};
+
+const updateGameTimeLimit = async (
+  id: string,
+  timeLimitSeconds: number,
+): Promise<GameSummary> => {
+  const response = await fetch(`/api/proxy?path=games/${id}/time-limit`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ timeLimitSeconds }),
+  });
+  const result = await response.json();
+  if (!result.data) {
+    throw new Error(result.message || "Não foi possível atualizar o tempo limite.");
   }
   return result.data;
 };
@@ -113,6 +133,7 @@ export {
   getGame,
   acceptGame,
   startGame,
+  updateGameTimeLimit,
   getPlayableGame,
   submitGameAnswers,
   getGameResult,

@@ -46,6 +46,14 @@ CreateGame:
       minimum: 1
   required:
     - examId
+UpdateGameTimeLimit:
+  type: object
+  properties:
+    timeLimitSeconds:
+      type: integer
+      minimum: 60
+  required:
+    - timeLimitSeconds
 GameSubmission:
   type: object
   properties:
