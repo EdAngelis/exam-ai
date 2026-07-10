@@ -13,6 +13,12 @@
   cursor: pointer;
 }
 
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .navList {
   list-style: none;
   display: flex;

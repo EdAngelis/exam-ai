@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./header.module.css";
 import { useSession } from "next-auth/react";
@@ -29,7 +30,14 @@ const Header = () => {
       <h1 className={styles.title} onClick={handleTitleClick}>
         Exam-AI
       </h1>
-      <LogoutButton />
+      <div className={styles.rightSection}>
+        <ul className={styles.navList}>
+          <li className={styles.navItem}>
+            <Link href="/game">Multiplayer</Link>
+          </li>
+        </ul>
+        <LogoutButton />
+      </div>
     </header>
   );
 };
