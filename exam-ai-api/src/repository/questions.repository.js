@@ -2,7 +2,13 @@ import { ObjectId } from "mongodb";
 import { Question } from "../models/index";
 
 const insertMany = async (questions) => {
-  return await Question.insertMany(questions, { ordered: false });
+  const now = new Date();
+  const timestampedQuestions = questions.map((question) => ({
+    ...question,
+    created_at: now,
+    updated_at: now,
+  }));
+  return await Question.insertMany(timestampedQuestions, { ordered: false });
 };
 
 const getCategories = async (userEmail) => {
@@ -28,12 +34,12 @@ const getQuestions = async (query) => {
 const updateManyQuestions = async (questions) => {
   try {
     const bulkOps = questions.map((question) => {
-      const { _id, ...updateFields } = question;
+      const { _id, created_at, ...updateFields } = question;
       return {
         updateOne: {
           filter: { _id: new ObjectId(_id) },
           update: {
-            $set: updateFields,
+            $set: { ...updateFields, updated_at: new Date() },
           },
         },
       };
