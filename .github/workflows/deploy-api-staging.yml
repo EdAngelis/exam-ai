@@ -96,23 +96,12 @@ jobs:
               "GoogleClientId=$GOOGLE_CLIENT_ID" \
               "ClientUrl=$CLIENT_URL"
 
-      - name: Read API URL
-        id: url
-        run: |
-          API_URL=$(aws cloudformation describe-stacks \
-            --stack-name exam-ai-api-staging \
-            --region us-east-1 \
-            --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" \
-            --output text)
-          echo "api_url=$API_URL" >> "$GITHUB_OUTPUT"
-
-      - name: Comment staging URL on PR
+      - name: Comment staging deployment status on PR
         uses: actions/github-script@v7
         with:
           script: |
             const marker = '<!-- staging-api-url -->';
-            const url = '${{ steps.url.outputs.api_url }}';
-            const body = `${marker}\n🚀 **Staging API deployed:** ${url}\n\nStack: \`exam-ai-api-staging\` · commit \`${context.sha.slice(0, 7)}\``;
+            const body = `${marker}\n✅ **Staging API deployed successfully.**\n\nStack: \`exam-ai-api-staging\` · commit \`${context.sha.slice(0, 7)}\``;
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
             const comments = await github.rest.issues.listComments({ owner, repo, issue_number });
