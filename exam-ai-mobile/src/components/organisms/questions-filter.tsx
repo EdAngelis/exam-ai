@@ -1,27 +1,27 @@
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Button } from '@/components/atoms/button';
-import { Label } from '@/components/atoms/label';
-import { Dropdown } from '@/components/molecules/dropdown';
-import { InlineMessage } from '@/components/molecules/inline-message';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
-import type { Exam, Question, User } from '@/models';
-import { insertExam } from '@/service/exams.service';
+import { Button } from "@/components/atoms/button";
+import { Label } from "@/components/atoms/label";
+import { Dropdown } from "@/components/molecules/dropdown";
+import { InlineMessage } from "@/components/molecules/inline-message";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { Spacing } from "@/constants/theme";
+import type { Exam, Question, User } from "@/models";
+import { insertExam } from "@/service/exams.service";
 import {
   getCategory,
   getQuestions,
   getSubcategory,
-} from '@/service/questions.service';
-import { getUser } from '@/service/user.service';
-import { saveAssignExamDraft } from '@/utils';
+} from "@/service/questions.service";
+import { getUser } from "@/service/user.service";
+import { saveAssignExamDraft } from "@/utils";
 
-const SELECT_CATEGORY = 'Select Category';
-const SELECT_SUBCATEGORY = 'Select SubCategory';
-const SELECT_SUBJECT = 'Select Subject';
+const SELECT_CATEGORY = "Select Category";
+const SELECT_SUBCATEGORY = "Select SubCategory";
+const SELECT_SUBJECT = "Select Subject";
 
 /**
  * Teacher-only tools: cascading category/subcategory/topic filters that build an
@@ -96,7 +96,7 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
       const qs = await getQuestions(userEmail, category, value);
       const list = qs ?? [];
       const distinct = Array.from(
-        new Set(list.map((q) => (q.subject || q.subJect || '') as string)),
+        new Set(list.map((q) => (q.subject || q.subJect || "") as string)),
       ).filter(Boolean);
       setSubjects([SELECT_SUBJECT, ...distinct]);
       setQuestions(list);
@@ -128,17 +128,17 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
   const startExam = async () => {
     setMessage(null);
     if (filtered.length === 0) {
-      setMessage('Select at least one question to start an exam.');
+      setMessage("Select at least one question to start an exam.");
       return;
     }
     try {
       const resp = await insertExam(buildExam());
       router.push({
-        pathname: '/exam',
+        pathname: "/exam",
         params: { examId: resp.exam.insertedId },
       });
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Could not create exam.');
+      setMessage(e instanceof Error ? e.message : "Could not create exam.");
     }
   };
 
@@ -162,25 +162,25 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
   const goToAssignExam = () => {
     setMessage(null);
     if (filtered.length === 0) {
-      setMessage('Select at least one question first.');
+      setMessage("Select at least one question first.");
       return;
     }
     const students = user?.students ?? [];
     if (students.length === 0) {
-      setMessage('You have no students to assign this exam to.');
+      setMessage("You have no students to assign this exam to.");
       return;
     }
     saveAssignExamDraft(buildExam());
-    router.push('/assign-exam');
+    router.push("/assign-exam");
   };
 
   const goToGenerator = () => {
     router.push({
-      pathname: '/generator',
+      pathname: "/generator",
       params: {
-        category: category === SELECT_CATEGORY ? '' : category,
-        subCategory: subCategory === SELECT_SUBCATEGORY ? '' : subCategory,
-        subject: subject === SELECT_SUBJECT ? '' : subject,
+        category: category === SELECT_CATEGORY ? "" : category,
+        subCategory: subCategory === SELECT_SUBCATEGORY ? "" : subCategory,
+        subject: subject === SELECT_SUBJECT ? "" : subject,
       },
     });
   };
@@ -191,9 +191,13 @@ export function QuestionsFilter({ userEmail }: { userEmail: string }) {
         <Button
           title="Manage students"
           variant="secondary"
-          onPress={() => router.push('/student')}
+          onPress={() => router.push("/student")}
         />
-        <Button title="Generate questions" variant="secondary" onPress={goToGenerator} />
+        <Button
+          title="Generate exam"
+          variant="secondary"
+          onPress={goToGenerator}
+        />
       </View>
 
       <View style={styles.field}>
@@ -255,7 +259,7 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
   },
   menu: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: Spacing.two,
   },
   field: {
